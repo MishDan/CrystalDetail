@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PristineCars - Professional Car Detailing</title>
-    <link rel="stylesheet" href="C:\Users\daniils.miscuks\Desktop\CrystalDetail\style.css">
+    <title>CrystalDetail - Professional Car Detailing</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Header -->
@@ -158,36 +158,17 @@
             </div>
         </div>
     </section>
+    <script src="js/reviews.js"></script>
 
     <!-- Reviews Section -->
     <section id="reviews" class="reviews">
         <div class="container">
             <h2>Customer Reviews</h2>
-            <div class="reviews-grid">
-                <div class="review-card">
-                    <div class="review-header">
-                        <img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg" alt="Michael Thompson">
-                        <div class="review-info">
-                            <h3>Michael Thompson</h3>
-                            <div class="stars">★★★★★</div>
-                        </div>
-                    </div>
-                    <p class="review-text">"Incredible service! My BMW looks better than when I first bought it. The ceramic coating is amazing!"</p>
-                    <span class="review-service">Ceramic Coating</span>
-                </div>
-                <div class="review-card">
-                    <div class="review-header">
-                        <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg" alt="Sarah Williams">
-                        <div class="review-info">
-                            <h3>Sarah Williams</h3>
-                            <div class="stars">★★★★½</div>
-                        </div>
-                    </div>
-                    <p class="review-text">"I got the interior cleaning package and was blown away by the results. They managed to remove stains I thought would be permanent."</p>
-                    <span class="review-service">Interior Cleaning</span>
-                </div>
+            <div id="reviews-grid" class="reviews-grid"></div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <button id="prevBtn">← Prev</button>
+                <button id="nextBtn">Next →</button>
             </div>
-        </div>
     </section>
 
     <!-- Contact Section -->
