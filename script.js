@@ -87,3 +87,27 @@ window.addEventListener('scroll', () => {
         header.classList.remove('scrolled');
     }
 });
+
+// section services 
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('database/get_services.php')
+        .then(res => res.json())
+        .then(services => {
+            const grid = document.querySelector('.services-grid');
+            grid.innerHTML = ''; 
+
+            services.forEach(service => {
+                grid.innerHTML += `
+                    <div class="service-card">
+                        <div class="service-icon">${service.icon}</div>
+                        <h3>${service.title}</h3>
+                        <p>${service.description}</p>
+                        <div class="service-details">
+                            <span class="price">${service.price}</span>
+                            <span class="duration">${service.duration}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+});

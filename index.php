@@ -12,15 +12,36 @@ $userId = null;
 
 if ($loggedIn) {
     $mysqli = new mysqli("localhost", "root", "", "car_users_db");
-    $stmt = $mysqli->prepare("SELECT first_name, last_name, username FROM users WHERE id = ?");
+    $stmt = $mysqli->prepare("SELECT car_make, car_model FROM users WHERE id = ?");
     $stmt->bind_param("i", $_SESSION['user_id']);
     $stmt->execute();
-    $stmt->bind_result($first, $last, $username);
+    $stmt->bind_result($make, $model);
     $stmt->fetch();
+    $carModelFromDB = trim("$make $model");
     $stmt->close();
-
-    $userDisplay = $username ?: "$first $last";
 }
+
+$mysqli = new mysqli("localhost", "root", "", "car_users_db");
+$userId = $_SESSION['user_id'];
+
+// Данные пользователя
+$stmt = $mysqli->prepare("SELECT first_name, last_name, username, phone, car_make, car_model, role FROM users WHERE id = ?");
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$stmt->bind_result($firstName, $lastName, $username, $phone, $carMake, $carModel, $role);
+$stmt->fetch();
+$stmt->close();
+
+$userDisplay = htmlspecialchars("$firstName $lastName");
+$carModelValue = trim("$carMake $carModel");
+
+// Получаем список услуг
+$services = [];
+$res = $mysqli->query("SELECT id, title FROM services");
+while ($row = $res->fetch_assoc()) {
+    $services[] = $row;
+}
+?>
 ?>
 
 
@@ -90,7 +111,7 @@ if ($loggedIn) {
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="services">
+    <!-- <section id="services" class="services">
         <div class="container">
             <h2>Our Services</h2>
             <p class="section-description">Discover our comprehensive range of detailing services designed to restore and protect your vehicle.</p>
@@ -151,7 +172,32 @@ if ($loggedIn) {
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
+    
+
+
+<section id="services" class="services">
+    <div class="container">
+        <h2>Our Services</h2>
+        <p class="section-description">
+            Discover our comprehensive range of detailing services designed to restore and protect your vehicle.
+        </p>
+
+        <div class="services-grid">
+            <?php foreach ($services as $service): ?>
+                <div class="service-card">
+                    <div class="service-icon"><?= htmlspecialchars($service['icon']) ?></div>
+                    <h3><?= htmlspecialchars($service['title']) ?></h3>
+                    <p><?= htmlspecialchars($service['description']) ?></p>
+                    <div class="service-details">
+                        <span class="price"><?= htmlspecialchars($service['price']) ?></span>
+                        <span class="duration"><?= htmlspecialchars($service['duration']) ?></span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
 
     <!-- Gallery Section -->
     <section id="gallery" class="gallery">
@@ -291,7 +337,7 @@ if ($loggedIn) {
                 <div class="footer-info">
                     <div class="logo">
                         <span class="logo-icon">🚗</span>
-                        <span class="logo-text">PristineCars</span>
+                        <span class="logo-text">CrystalDetail</span>
                     </div>
                     <p>Professional car detailing services with a passion for perfection. We bring back the showroom shine to every vehicle we touch.</p>
                     <div class="social-links">
@@ -320,7 +366,7 @@ if ($loggedIn) {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 PristineCars. All rights reserved.</p>
+                <p>&copy; 2024 CrystalDetail. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -344,7 +390,7 @@ if ($loggedIn) {
         <div id="registerFields" style="display: none;">
           <input type="text" name="first_name" placeholder="First Name">
           <input type="text" name="last_name" placeholder="Last Name">
-          <input type="Email" name="username" placeholder="Username">
+          <input type="Email" name="username" placeholder="Email">
           <input type="text" name="car_make" placeholder="Car Make">
           <input type="text" name="car_model" placeholder="Car Model">
           <input type="text" name="phone" placeholder="Phone Number">
@@ -367,10 +413,107 @@ if ($loggedIn) {
 </div>
 
 <div class="modal" id="userModal" style="display: none;">
-  <div class="modal-content">
-    <span class="close" onclick="closeUserModal()">&times;</span>
-    <h2>Hello, <?php echo htmlspecialchars($userDisplay); ?></h2>
-    <button onclick="logoutUser()">Logout</button>
+  <div class="modal-content booking-modal">
+  <span class="close" onclick="closeUserModal()" style="position:absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer;">&times;</span>
+
+    <div class="appointment-wrapper">
+      
+      <!-- Sidebar Tabs -->
+      <div class="sidebar">
+        <h3>Hello, <?= $userDisplay ?></h3>
+        <ul>
+            <li class="tab-btn active" data-tab="create">Create Appointment</li>
+            <li class="tab-btn" data-tab="history">My History</li>
+            <li class="tab-btn" data-tab="edit">Edit Profile</li>
+
+            <?php if ($role === 'moder' || $role === 'admin'): ?>
+                <li class="tab-btn" data-tab="all_appointments">All Appointments</li>
+            <?php endif; ?>
+
+            <?php if ($role === 'admin'): ?>
+                <li class="tab-btn" data-tab="all_users">All Users</li>
+                <li class="tab-btn" data-tab="create_role">Create Role</li>
+            <?php endif; ?>
+
+            <li style="margin-top: 20px;">
+                <button onclick="logoutUser()">Logout</button>
+            </li>
+        </ul>
+      </div>
+
+      <!-- Tabs Container -->
+      <div class="tabs-container">
+
+        <!-- Create Appointment Tab -->
+        <div class="appointment-form tab-content" data-tab="create" style="display: block;">
+          <h2>Create Appointment</h2>
+          <form id="bookingForm">
+            <label>Car Model</label>
+            <input type="text" name="car_model" value="<?= htmlspecialchars($carModelValue) ?>" required>
+
+            <label>Service</label>
+            <select name="service_id" required>
+              <option value="">Select Service</option>
+              <?php foreach ($services as $service): ?>
+                <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['title']) ?></option>
+              <?php endforeach; ?>
+            </select>
+
+            <label>Date</label>
+            <input type="date" name="date" id="dateInput" required>
+
+            <label>Time</label>
+            <select name="time" id="timeInput" required></select>
+
+            <div class="message" id="bookingError"></div>
+            <div class="message success" id="bookingSuccess"></div>
+
+            <button type="submit">Confirm Booking</button>
+          </form>
+        </div>
+
+        <!-- My History Tab -->
+        <div class="appointment-history tab-content" data-tab="history" style="display: none;">
+          <h2>My Appointments</h2>
+          <div id="historyContent">Loading...</div>
+        </div>
+
+        <!-- Edit Profile Tab -->
+        <div class="appointment-edit tab-content" data-tab="edit" style="display: none;">
+            <h2>Edit Profile</h2>
+            <form id="profileForm">
+                <input type="text" name="first_name" placeholder="First Name" value="<?= htmlspecialchars($firstName) ?>" required>
+                <input type="text" name="last_name" placeholder="Last Name" value="<?= htmlspecialchars($lastName) ?>" required>
+                <input type="text" name="username" placeholder="Username" value="<?= htmlspecialchars($username) ?>" required>
+                <input type="text" name="phone" placeholder="Phone" value="<?= htmlspecialchars($phone) ?>">
+                <input type="text" name="car_make" placeholder="Car Make" value="<?= htmlspecialchars($carMake) ?>">
+                <input type="text" name="car_model" placeholder="Car Model" value="<?= htmlspecialchars($carModel) ?>">
+
+                <button type="submit">Save Changes</button>
+
+                <p style="margin-top: 10px; text-align: center;">
+                <a href="#" onclick="togglePasswordReset(event)">Reset Password</a>
+                </p>
+            </form>
+
+            <!-- Reset Password -->
+            <form id="passwordResetForm" style="display: none; margin-top: 1rem;">
+                <input type="password" name="current_password" placeholder="Current Password" required>
+                <input type="password" name="new_password" placeholder="New Password" required>
+                <button type="submit">Change Password</button>
+            </form>
+
+            <div class="message" id="profileMessage"></div>
+        </div>
+
+      </div> <!-- /tabs-container -->
+
+    </div> <!-- /appointment-wrapper -->
+    <div class="tab-content" data-tab="all_appointments" style="display: none;">
+  <h2>All Appointments</h2>
+  <div id="allAppointmentsTable">Loading...</div>
+</div>
+
   </div>
 </div>
       <script src="script.js"></script>

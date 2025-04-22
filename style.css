@@ -666,14 +666,73 @@ textarea {
     .hero-buttons {
         justify-content: center;
     }
-
+    #userModal{
+        padding-top: 10rem;
+    }
     .form-row {
         grid-template-columns: 1fr;
     }
-}
-
-
-
+    .modal {
+        justify-content: center;
+        align-items: flex-start;
+        overflow: hidden;
+      }
+    
+      .modal-content {
+        margin-top: 4rem; 
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+        flex-direction: column;
+        width: 95%;
+        padding: 1rem;
+        box-sizing: border-box;
+        border-radius: 12px;
+      }
+    
+      .modal-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px 10px 0 0;
+      }
+    
+      .appointment-wrapper {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+      }
+    
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+      }
+    
+      .sidebar ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: space-around;
+      }
+    
+      .sidebar li {
+        flex: 1 1 45%;
+        text-align: center;
+        background: #f3f4f6;
+        border-radius: 6px;
+      }
+    
+      .sidebar button {
+        width: 100%;
+      }
+    
+      .tabs-container {
+        width: 100%;
+      }
+    
+      .modal-form {
+        padding: 1rem;
+      }
+    }
 /* modal */
 
 .modal {
@@ -783,3 +842,70 @@ textarea {
     color: #007bff;
   }
   
+
+  .appointment-wrapper {
+    display: flex;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 2rem auto;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #f9f9f9;
+    gap: 2rem;
+}
+
+.sidebar {
+    width: 220px;
+    border-right: 1px solid #ccc;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar li {
+    padding: 10px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.sidebar li:hover {
+    background: #e5e7eb;
+}
+
+.appointment-form {
+    flex-grow: 1;
+}
+.appointment-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.appointment-form input,
+.appointment-form select,
+.appointment-form button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.appointment-form button {
+    background-color: #1e40af;
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+.message {
+    font-size: 0.9rem;
+    color: red;
+}
+.message.success {
+    color: green;
+}
+.sidebar button {
+    font-weight: bold;
+    background-color: #ef4444;
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
