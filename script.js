@@ -114,21 +114,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.getElementById('galleryGrid');
-  
-    fetch('database/get_gallery_images.php')
-      .then(res => res.json())
-      .then(images => {
-        grid.innerHTML = images.map(img => `
-          <div class="gallery-item" data-service="${img.service}">
-            <img src="${img.image_path}" alt="${img.description}">
-            <div class="gallery-caption">
-              <h3>${img.service}</h3>
-              <p>${img.description}</p>
-            </div>
+  fetch('database/get_gallery_images.php')
+    .then(res => res.json())
+    .then(images => {
+      const grid = document.getElementById('galleryGrid');
+      grid.innerHTML = images.map(img => `
+        <div class="gallery-item" data-service="${img.service}">
+          <img src="${img.image_url}" alt="${img.alt_text}">
+          <div class="gallery-caption">
+            <h3>${img.service}</h3>
+            <p>${img.caption}</p>
           </div>
-        `).join('');
-      });
-  });
-  
+        </div>
+      `).join('');
+    });
+});
+

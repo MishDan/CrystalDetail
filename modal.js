@@ -146,10 +146,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         content.style.display = content.dataset.tab === tab ? 'block' : 'none';
       });
   
+
+    // Here is all tabs 
       if (tab === 'all_users') loadAllUsers(); 
       if (tab === 'all_appointments') loadAppointments();
       if (tab === 'edit_services') loadServices();
       if (tab === 'reviews') loadReviews();
+      if (tab === 'gallery_admin') loadGalleryAdmin();
+
 
     });
   });
@@ -488,26 +492,34 @@ function loadServices(page = 1) {
 
       const s = data.services[0];
       editor.innerHTML = `
-      <form onsubmit="saveService(event, ${s.id})">
-        <label>Title</label>
-        <input name="title" value="${s.title}" required>
+      <div class="gallery-edit-form">
+        <form onsubmit="saveService(event, ${s.id})" class="form-left">
+          <label>Title</label>
+          <input name="title" value="${s.title}" required>
+      
+          <label>Description</label>
+          <textarea name="description" required>${s.description}</textarea>
+      
+          <label>Icon</label>
+          <input name="icon" value="${s.icon || ''}">
+      
+          <label>Price</label>
+          <input name="price" value="${s.price || ''}">
+      
+          <label>Duration</label>
+          <input name="duration" value="${s.duration || ''}">
+      
+          <div class="button-group">
+            <button type="submit" class="save-btn">Save</button>
+            <button type="button" onclick="deleteService(${s.id})" class="delete-btn">Delete</button>
+          </div>
+        </form>
     
-        <label>Description</label>
-        <textarea name="description" required>${s.description}</textarea>
-    
-        <label>Icon</label>
-        <input name="icon" value="${s.icon || ''}">
-    
-        <label>Price</label>
-        <input name="price" value="${s.price || ''}">
-    
-        <label>Duration</label>
-        <input name="duration" value="${s.duration || ''}">
-    
-        <button type="submit">Save</button>
-        <button type="button" onclick="deleteService(${s.id})" style="background:red; color:white; margin-left: 1rem;">Delete</button>
-      </form>
+        <div class="form-right">
+        </div>
+      </div>
     `;
+    
     
 
       pagination.innerHTML = '';
@@ -580,9 +592,12 @@ function loadReviews(page = 1) {
       }
 
       table.innerHTML = `
+      <div class="scroll-wrapper">
         <table>
           <thead>
-            <tr><th>Name</th><th>Stars</th><th>Service</th><th>Text</th><th>Action</th></tr>
+            <tr>
+              <th>Name</th><th>Stars</th><th>Service</th><th>Text</th><th>Action</th>
+            </tr>
           </thead>
           <tbody>
             ${data.reviews.map(r => `
@@ -596,7 +611,8 @@ function loadReviews(page = 1) {
             `).join('')}
           </tbody>
         </table>
-      `;
+      </div>
+    `;
 
       pag.innerHTML = '';
       for (let i = 1; i <= data.total_pages; i++) {
@@ -621,3 +637,204 @@ function deleteReview(id) {
       });
   }
   
+  let currentGalleryPage = 1;
+
+function loadGalleryAdmin(page = 1) {
+  fetch(`database/get_gallery_admin.php?page=${page}`)
+    .then(res => res.json())
+    .then(data => {
+      const editor = document.getElementById('galleryAdminEditor');
+      const pagination = document.getElementById('galleryPaginationControls');
+      currentGalleryPage = page;
+
+      if (!data.images.length) {
+        editor.innerHTML = '<p>No images found.</p>';
+        pagination.innerHTML = '';
+        return;
+      }
+
+      const g = data.images[0];
+      editor.innerHTML = `
+      <form onsubmit="saveGalleryImage(event, ${g.id})" class="gallery-edit-form" enctype="multipart/form-data">
+        <div class="form-left">
+          <label>Upload Image</label>
+          <input type="file" name="image" accept="image/*">
+    
+          <label>Service</label>
+          <input name="service" value="${g.service || ''}" placeholder="e.g. Exterior Wash">
+    
+          <label>Alt Text</label>
+          <input name="alt_text" value="${g.alt_text || ''}" placeholder="Image alt description">
+    
+          <label>Caption</label>
+          <textarea name="caption" placeholder="Image caption">${g.caption || ''}</textarea>
+    
+          <div class="button-group">
+            <button type="submit" class="save-btn">Save</button>
+            <button type="button" onclick="deleteGalleryImage(${g.id}, '${g.image_url}')" class="delete-btn">Delete</button>
+          </div>
+        </div>
+        <div class="form-right">
+          <img src="${g.image_url}" class="gallery-preview" alt="Preview">
+        </div>
+      </form>
+    `;
+
+      pagination.innerHTML = '';
+      for (let i = 1; i <= data.total_pages; i++) {
+        pagination.innerHTML += `<button class="${i === page ? 'active' : ''}" onclick="loadGalleryAdmin(${i})">${i}</button>`;
+      }
+    });
+}
+
+
+function saveGalleryImage(e, id) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    formData.append('id', id);
+  
+    fetch('database/update_gallery.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(res => {
+      if (res.success) {
+        alert('Saved!');
+        loadGalleryAdmin(currentGalleryPage);
+      } else {
+        alert(res.error || 'Save failed.');
+      }
+    });
+  }
+
+function addNewGalleryImage() {
+  fetch('database/create_gallery.php', {
+    method: 'POST'
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) loadGalleryAdmin(res.page);
+    else alert(res.error || 'Failed to add.');
+  });
+}
+
+function deleteGalleryImage(id, imagePath) {
+    if (!confirm('Delete this image?')) return;
+    fetch('database/delete_gallery.php', {
+      method: 'POST',
+      body: new URLSearchParams({ id, image_path: imagePath })
+    })
+    .then(res => res.json())
+    .then(res => {
+      if (res.success) {
+        alert('Deleted');
+        loadGalleryAdmin(currentGalleryPage > 1 ? currentGalleryPage - 1 : 1);
+      } else {
+        alert(res.error || 'Delete failed.');
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('profileImageInput');
+    const preview = document.getElementById('previewImage');
+  
+    if (input && preview) {
+      input.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+  
+      const res = await fetch('database/update_user_info.php', {
+        method: 'POST',
+        body: formData
+      });
+  
+      const result = await res.json();
+      if (result.success) {
+      } else {
+        alert(result.error || "Failed to update.");
+      }
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('.star');
+    const starsInput = document.getElementById('starsInput');
+    const reviewForm = document.getElementById('reviewForm');
+    const reviewMessage = document.getElementById('reviewMessage');
+  
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+  
+    // === ЛОГИКА ВКЛАДОК ===
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+  
+        tabs.forEach(b => b.classList.remove('active'));
+        contents.forEach(c => c.style.display = 'none');
+  
+        btn.classList.add('active');
+        const content = document.querySelector(`.tab-content[data-tab="${target}"]`);
+        if (content) content.style.display = 'block';
+      });
+    });
+  
+    // === ВЫБОР ЗВЕЗД ===
+    stars.forEach(star => {
+      star.addEventListener('click', function () {
+        const value = parseInt(this.dataset.value);
+        starsInput.value = value;
+        stars.forEach(s => {
+          s.classList.toggle('selected', parseInt(s.dataset.value) <= value);
+        });
+      });
+    });
+  
+    // === ОТПРАВКА ФОРМЫ ОТЗЫВА ===
+    if (reviewForm) {
+      reviewForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        reviewMessage.textContent = '';
+  
+        const formData = new FormData(reviewForm);
+        formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+  
+        try {
+          const res = await fetch('database/add_review.php', {
+            method: 'POST',
+            body: formData
+          });
+  
+          const result = await res.json();
+  
+          if (result.success) {
+            reviewMessage.textContent = result.success;
+            reviewMessage.className = 'message success';
+            reviewForm.reset();
+            stars.forEach(s => s.classList.remove('selected'));
+            starsInput.value = 0;
+          } else {
+            reviewMessage.textContent = result.error || 'Something went wrong.';
+            reviewMessage.className = 'message error';
+          }
+        } catch (err) {
+          reviewMessage.textContent = 'Server error.';
+          reviewMessage.className = 'message error';
+        }
+      });
+    }
+  });

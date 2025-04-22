@@ -22,10 +22,10 @@ $firstName = $lastName = $username = $phone = $carMake = $carModel = $role = nul
 
 if ($loggedIn) {
     // Получение данных пользователя
-    $stmt = $mysqli->prepare("SELECT first_name, last_name, username, phone, car_make, car_model, role FROM users WHERE id = ?");
+    $stmt = $mysqli->prepare("SELECT first_name, last_name, username, phone, car_make, car_model, role, profile_image FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
-    $stmt->bind_result($firstName, $lastName, $username, $phone, $carMake, $carModel, $role);
+    $stmt->bind_result($firstName, $lastName, $username, $phone, $carMake, $carModel, $role, $profileImage);
 
     if ($stmt->fetch()) {
         $userDisplay = htmlspecialchars("$firstName $lastName");
@@ -142,58 +142,14 @@ $mysqli->close();
 </section>
 
     <!-- Gallery Section -->
-     \
-    <!-- <section id="gallery" class="gallery">
+
+    <section id="gallery" class="gallery">
         <div class="container">
             <h2>Gallery</h2>
             <p class="section-description">Browse our portfolio of meticulously detailed vehicles.</p>
-            <div class="gallery-grid">
-                <div class="gallery-item" data-service="Ceramic Coating">
-                    <img src="Images/After_bmwM4.png" alt="Black BMW M4">
-                    <div class="gallery-caption">
-                        <h3>Ceramic Coating</h3>
-                        <p>Yellow BMW M4 with premium ceramic coating</p>
-                    </div>
-                </div>
-                <div class="gallery-item" data-service="Exterior Wash">
-                    <img src="Images/After_MB_S.png" alt="Mercedes-Benz S-Class">
-                    <div class="gallery-caption">
-                        <h3>Exterior Wash</h3>
-                        <p>Mercedes-Benz S-Class after detailing</p>
-                    </div>
-                </div>
-                <div class="gallery-item" data-service="Interior Cleaning">
-                    <img src="Images/After_Audi_Q8.png" alt="Luxury SUV Interior">
-                    <div class="gallery-caption">
-                        <h3>Interior Cleaning</h3>
-                        <p>Immaculate interior detail</p>
-                    </div>
-                </div>
-                <div class="gallery-item" data-service="Ceramic Coating">
-                    <img src="Images/After_bmwM4.png" alt="Black BMW M4">
-                    <div class="gallery-caption">
-                        <h3>Ceramic Coating</h3>
-                        <p>Yellow BMW M4 with premium ceramic coating</p>
-                    </div>
-                </div>
-                <div class="gallery-item" data-service="Exterior Wash">
-                    <img src="Images/After_MB_S.png" alt="Mercedes-Benz S-Class">
-                    <div class="gallery-caption">
-                        <h3>Exterior Wash</h3>
-                        <p>Mercedes-Benz S-Class after detailing</p>
-                    </div>
-                </div>
-                <div class="gallery-item" data-service="Interior Cleaning">
-                    <img src="Images/After_Audi_Q8.png" alt="Luxury SUV Interior">
-                    <div class="gallery-caption">
-                        <h3>Interior Cleaning</h3>
-                        <p>Immaculate interior detail</p>
-                    </div>
-                </div>
-            </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
         </div>
-    </section> -->
-    <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
 
 
                 
@@ -371,6 +327,7 @@ $mysqli->close();
             <li class="tab-btn active" data-tab="create">Create Appointment</li>
             <li class="tab-btn" data-tab="history">My History</li>
             <li class="tab-btn" data-tab="edit">Edit Profile</li>
+            <li class="tab-btn" data-tab="write-review">Create review</li>
 
             <?php if ($role === 'moder' || $role === 'admin'): ?>
                 <li class="tab-btn" data-tab="all_appointments">All Appointments</li>
@@ -380,6 +337,8 @@ $mysqli->close();
                 <li class="tab-btn" data-tab="all_users">All Users</li>
                 <li class="tab-btn" data-tab="edit_services">Services</li>
                 <li class="tab-btn" data-tab="reviews">Reviews</li>
+                <li class="tab-btn" data-tab="gallery_admin">Gallery</li>
+
                 
             <?php endif; ?>
 
@@ -429,15 +388,31 @@ $mysqli->close();
         <!-- Edit Profile Tab -->
         <div class="appointment-edit tab-content" data-tab="edit" style="display: none;">
             <h2>Edit Profile</h2>
-            <form id="profileForm">
-                <input type="text" name="first_name" placeholder="First Name" value="<?= htmlspecialchars($firstName) ?>" required>
-                <input type="text" name="last_name" placeholder="Last Name" value="<?= htmlspecialchars($lastName) ?>" required>
-                <input type="text" name="username" placeholder="Username" value="<?= htmlspecialchars($username) ?>" required>
-                <input type="text" name="phone" placeholder="Phone" value="<?= htmlspecialchars($phone) ?>">
-                <input type="text" name="car_make" placeholder="Car Make" value="<?= htmlspecialchars($carMake) ?>">
-                <input type="text" name="car_model" placeholder="Car Model" value="<?= htmlspecialchars($carModel) ?>">
+            <form id="profileForm" enctype="multipart/form-data">
+            <label for="profileImageInput">Profile Image</label>
+            <input type="file" id="profileImageInput" name="profile_image" accept="image/*" style="display:none">
+            <div style="cursor:pointer; width: 120px;" onclick="document.getElementById('profileImageInput').click()">
+            <img
+                id="previewImage"
+                src="Images_db/<?= $profileImage ?? 'icon_default_user.png' ?>"
+                alt="Profile image"
+                style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;"
+                onerror="this.onerror=null; this.src='Images_db/icon_default_user.png';"
+                />            
+            <p style="font-size: 12px; text-align:center; color: #666;">Click to change</p>
+            </div>
 
-                <button type="submit">Save Changes</button>
+            <!-- Остальные поля -->
+            <input type="text" name="first_name" value="<?= htmlspecialchars($firstName) ?>" required>
+            <input type="text" name="last_name" value="<?= htmlspecialchars($lastName) ?>" required>
+            <input type="text" name="username" value="<?= htmlspecialchars($username) ?>" required>
+            <input type="text" name="phone" value="<?= htmlspecialchars($phone) ?>">
+            <input type="text" name="car_make" value="<?= htmlspecialchars($carMake) ?>">
+            <input type="text" name="car_model" value="<?= htmlspecialchars($carModel) ?>">
+
+            <button type="submit">Save Changes</button>
+            </form>
+
 
                 <p style="margin-top: 10px; text-align: center;">
                 <a href="#" onclick="togglePasswordReset(event)">Reset Password</a>
@@ -452,9 +427,10 @@ $mysqli->close();
             </form>
 
             <div class="message" id="profileMessage"></div>
+
         </div>
 
-      </div> <!-- /tabs-container -->
+
 
     </div> <!-- /appointment-wrapper -->
     <div class="tab-content" data-tab="all_appointments" style="display: none;">
@@ -488,7 +464,50 @@ $mysqli->close();
   <h2>All Reviews</h2>
   <div id="reviewsTable">Loading...</div>
   <div id="reviewsPagination" class="pagination"></div>
-</div>               
+</div>        
+
+
+<div class="tab-content" data-tab="gallery_admin" style="display: none;">
+  <h2>Edit Gallery</h2>
+
+  <div id="galleryAdminEditor">Loading...</div>
+  <div id="galleryPaginationControls" class="pagination"></div>
+
+  <button onclick="addNewGalleryImage()" style="margin-top: 1rem; background:#10b981; color:white;">Add New Image</button>
+</div>
+
+
+
+<!-- reviews -->
+<div class="tab-content" data-tab="write-review" style="display: none;">
+  <h2>Write a Review</h2>
+  <form id="reviewForm">
+    <label>Service</label>
+    <select name="service" required>
+      <option value="">Select Service</option>
+      <?php foreach ($services as $s): ?>
+        <option value="<?= htmlspecialchars($s['title']) ?>"><?= htmlspecialchars($s['title']) ?></option>
+      <?php endforeach; ?>
+    </select>
+
+    <label>Rating</label>
+    <div class="star-container">
+      <?php for ($i = 1; $i <= 5; $i++): ?>
+        <span class="star" data-value="<?= $i ?>">★</span>
+      <?php endfor; ?>
+    </div>
+    <input type="hidden" name="stars" id="starsInput" value="0">
+
+    <label>Your Review</label>
+    <textarea name="text" required></textarea>
+
+    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+    <button type="submit">Submit Review</button>
+    <div class="message" id="reviewMessage"></div>
+  </form>
+</div>
+
 
 
   </div>

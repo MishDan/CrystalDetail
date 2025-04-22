@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $password = "";
-$db = "reviews_db";
+$db = "car_users_db";
 
 $conn = new mysqli($host, $user, $password, $db);
 $conn->set_charset("utf8");

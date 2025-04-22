@@ -7,20 +7,20 @@ $mysqli = new mysqli("localhost", "root", "", "car_users_db");
 if ($mysqli->connect_error) exit;
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$perPage = 3;
+$perPage = 1;
 $offset = ($page - 1) * $perPage;
 
-$total = $mysqli->query("SELECT COUNT(*) as total FROM reviews")->fetch_assoc()['total'];
+$total = $mysqli->query("SELECT COUNT(*) as total FROM gallery")->fetch_assoc()['total'];
 $pages = ceil($total / $perPage);
 
-$result = $mysqli->query("SELECT id, name, stars, service, text FROM reviews LIMIT $perPage OFFSET $offset");
+$result = $mysqli->query("SELECT * FROM gallery ORDER BY id DESC LIMIT $perPage OFFSET $offset");
 
-$reviews = [];
-while ($r = $result->fetch_assoc()) {
-    $reviews[] = $r;
+$images = [];
+while ($img = $result->fetch_assoc()) {
+    $images[] = $img;
 }
 
 echo json_encode([
-  'reviews' => $reviews,
+  'images' => $images,
   'total_pages' => $pages
 ]);
