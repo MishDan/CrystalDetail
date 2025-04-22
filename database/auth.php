@@ -68,14 +68,19 @@ if ($mode === 'register') {
 
 } else {
     // Login
-    $stmt = $mysqli->prepare("SELECT id, password FROM users WHERE gmail = ? OR username = ?");
+    $stmt = $mysqli->prepare("SELECT id, password, role FROM users WHERE gmail = ? OR username = ?");
     $stmt->bind_param("ss", $gmail, $gmail);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-        $stmt->bind_result($id, $hashed);
+        $stmt->bind_result($id, $hashed, $role);
         $stmt->fetch();
+
+        if ($role === 'banned') {
+            echo json_encode(['error' => 'Your account has been banned.']);
+            exit;
+        }
 
         if (password_verify($password, $hashed)) {
             $_SESSION['user_id'] = $id;

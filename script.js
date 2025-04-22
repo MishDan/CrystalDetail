@@ -64,13 +64,13 @@ mobileMenuBtn.addEventListener('click', () => {
 });
 
 // Modal 
-function openModal() {
-    document.getElementById('loginModal').style.display = 'flex';
-}
+// function openModal() {
+//     document.getElementById('loginModal').style.display = 'flex';
+// }
 
-function closeModal() {
-    document.getElementById('loginModal').style.display = 'none';
-}
+// function closeModal() {
+//     document.getElementById('loginModal').style.display = 'none';
+// }
 
 // Close modal when clicking outside
 document.getElementById('authModal').addEventListener('click', (e) => {
@@ -111,3 +111,24 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 });
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('galleryGrid');
+  
+    fetch('database/get_gallery_images.php')
+      .then(res => res.json())
+      .then(images => {
+        grid.innerHTML = images.map(img => `
+          <div class="gallery-item" data-service="${img.service}">
+            <img src="${img.image_path}" alt="${img.description}">
+            <div class="gallery-caption">
+              <h3>${img.service}</h3>
+              <p>${img.description}</p>
+            </div>
+          </div>
+        `).join('');
+      });
+  });
+  

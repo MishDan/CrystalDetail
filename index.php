@@ -1,47 +1,56 @@
 <?php
 session_start();
 
+// Генерация CSRF токена
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$loggedIn = isset($_SESSION['user_id']);
+// Подключение к базе данных
+$mysqli = new mysqli("localhost", "root", "", "car_users_db");
 
+if ($mysqli->connect_error) {
+    die("Database connection failed: " . $mysqli->connect_error);
+}
+
+// Проверка авторизации
+$loggedIn = isset($_SESSION['user_id']);
 $userDisplay = "Login / Register";
-$userId = null;
+$userId = $loggedIn ? $_SESSION['user_id'] : null;
+$carModelValue = '';
+$firstName = $lastName = $username = $phone = $carMake = $carModel = $role = null;
 
 if ($loggedIn) {
-    $mysqli = new mysqli("localhost", "root", "", "car_users_db");
-    $stmt = $mysqli->prepare("SELECT car_make, car_model FROM users WHERE id = ?");
-    $stmt->bind_param("i", $_SESSION['user_id']);
+    // Получение данных пользователя
+    $stmt = $mysqli->prepare("SELECT first_name, last_name, username, phone, car_make, car_model, role FROM users WHERE id = ?");
+    $stmt->bind_param("i", $userId);
     $stmt->execute();
-    $stmt->bind_result($make, $model);
-    $stmt->fetch();
-    $carModelFromDB = trim("$make $model");
+    $stmt->bind_result($firstName, $lastName, $username, $phone, $carMake, $carModel, $role);
+
+    if ($stmt->fetch()) {
+        $userDisplay = htmlspecialchars("$firstName $lastName");
+        $carModelValue = trim("$carMake $carModel");
+    } else {
+        // Если пользователь не найден — сброс сессии
+        session_destroy();
+        header("Location: index.php");
+        exit;
+    }
+
     $stmt->close();
 }
 
-$mysqli = new mysqli("localhost", "root", "", "car_users_db");
-$userId = $_SESSION['user_id'];
-
-// Данные пользователя
-$stmt = $mysqli->prepare("SELECT first_name, last_name, username, phone, car_make, car_model, role FROM users WHERE id = ?");
-$stmt->bind_param("i", $_SESSION['user_id']);
-$stmt->execute();
-$stmt->bind_result($firstName, $lastName, $username, $phone, $carMake, $carModel, $role);
-$stmt->fetch();
-$stmt->close();
-
-$userDisplay = htmlspecialchars("$firstName $lastName");
-$carModelValue = trim("$carMake $carModel");
-
-// Получаем список услуг
+// Получение списка услуг
 $services = [];
-$res = $mysqli->query("SELECT id, title FROM services");
-while ($row = $res->fetch_assoc()) {
-    $services[] = $row;
+$res = $mysqli->query("SELECT id, title, icon, description, price, duration FROM services");
+
+if ($res) {
+    while ($row = $res->fetch_assoc()) {
+        $services[] = $row;
+    }
 }
-?>
+
+$mysqli->close();
 ?>
 
 
@@ -93,10 +102,7 @@ while ($row = $res->fetch_assoc()) {
         </div>
     </header>
    
-    <div id="loginModal" class="modal">
-   
-        
-    </div>
+
 
     <!-- Hero Section -->
     <section id="home" class="hero">
@@ -109,70 +115,6 @@ while ($row = $res->fetch_assoc()) {
             </div>
         </div>
     </section>
-
-    <!-- Services Section -->
-    <!-- <section id="services" class="services">
-        <div class="container">
-            <h2>Our Services</h2>
-            <p class="section-description">Discover our comprehensive range of detailing services designed to restore and protect your vehicle.</p>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">🚿</div>
-                    <h3>Exterior Wash</h3>
-                    <p>Thorough cleaning of your vehicle's exterior using premium products that protect your paint while removing dirt and grime.</p>
-                    <div class="service-details">
-                        <span class="price">From $49.99</span>
-                        <span class="duration">1 hour</span>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🧹</div>
-                    <h3>Interior Cleaning</h3>
-                    <p>Deep cleaning of all interior surfaces, including vacuuming, steam cleaning, and conditioning of leather and plastic surfaces.</p>
-                    <div class="service-details">
-                        <span class="price">From $89.99</span>
-                        <span class="duration">2 hours</span>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">✨</div>
-                    <h3>Polishing</h3>
-                    <p>Machine polishing to remove swirl marks, light scratches, and oxidation, restoring your car's paint to a mirror-like finish.</p>
-                    <div class="service-details">
-                        <span class="price">From $149.99</span>
-                        <span class="duration">3-4 hours</span>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🛡️</div>
-                    <h3>Ceramic Coating</h3>
-                    <p>Advanced protective layer that bonds with your car's paint, providing long-lasting protection against UV rays, chemicals, and scratches.</p>
-                    <div class="service-details">
-                        <span class="price">From $499.99</span>
-                        <span class="duration">1-2 days</span>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🔧</div>
-                    <h3>Scratch Touch-ups</h3>
-                    <p>Professional repair of minor scratches and paint damage to restore your vehicle's appearance and prevent further damage.</p>
-                    <div class="service-details">
-                        <span class="price">From $99.99</span>
-                        <span class="duration">2-3 hours</span>
-                    </div>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🎨</div>
-                    <h3>Paint Protection Film</h3>
-                    <p>Invisible urethane film applied to high-impact areas to protect your paint from stone chips, scratches, and environmental damage.</p>
-                    <div class="service-details">
-                        <span class="price">From $899.99</span>
-                        <span class="duration">1-2 days</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
     
 
 
@@ -200,7 +142,8 @@ while ($row = $res->fetch_assoc()) {
 </section>
 
     <!-- Gallery Section -->
-    <section id="gallery" class="gallery">
+     \
+    <!-- <section id="gallery" class="gallery">
         <div class="container">
             <h2>Gallery</h2>
             <p class="section-description">Browse our portfolio of meticulously detailed vehicles.</p>
@@ -249,8 +192,11 @@ while ($row = $res->fetch_assoc()) {
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
+    <div class="gallery-grid" id="galleryGrid"></div>
 
+
+                
     <!-- Reviews Section -->
     <section id="reviews" class="reviews">
         <div class="container">
@@ -388,12 +334,12 @@ while ($row = $res->fetch_assoc()) {
 
         <!-- Register -->
         <div id="registerFields" style="display: none;">
-          <input type="text" name="first_name" placeholder="First Name">
-          <input type="text" name="last_name" placeholder="Last Name">
-          <input type="Email" name="username" placeholder="Email">
-          <input type="text" name="car_make" placeholder="Car Make">
-          <input type="text" name="car_model" placeholder="Car Model">
-          <input type="text" name="phone" placeholder="Phone Number">
+            <input type="text" name="first_name" placeholder="First Name" disabled>
+            <input type="text" name="last_name" placeholder="Last Name" disabled>
+            <input type="email" name="username" placeholder="Email" disabled>
+            <input type="text" name="car_make" placeholder="Car Make" disabled>
+            <input type="text" name="car_model" placeholder="Car Model" disabled>
+            <input type="text" name="phone" placeholder="Phone Number" disabled>
         </div>
 
         <!-- Login(united!!!) -->
@@ -432,7 +378,9 @@ while ($row = $res->fetch_assoc()) {
 
             <?php if ($role === 'admin'): ?>
                 <li class="tab-btn" data-tab="all_users">All Users</li>
-                <li class="tab-btn" data-tab="create_role">Create Role</li>
+                <li class="tab-btn" data-tab="edit_services">Services</li>
+                <li class="tab-btn" data-tab="reviews">Reviews</li>
+                
             <?php endif; ?>
 
             <li style="margin-top: 20px;">
@@ -510,9 +458,38 @@ while ($row = $res->fetch_assoc()) {
 
     </div> <!-- /appointment-wrapper -->
     <div class="tab-content" data-tab="all_appointments" style="display: none;">
-  <h2>All Appointments</h2>
-  <div id="allAppointmentsTable">Loading...</div>
+    <h2>All Appointments</h2>
+
+    <div class="filter-buttons">
+        <button onclick="loadAppointments('upcoming')" class="active" id="btn-upcoming">Upcoming</button>
+        <button onclick="loadAppointments('past')" id="btn-past">Past (last 7 days)</button>
+    </div>
+
+    <div id="allAppointmentsTable">Loading...</div>
+    <div id="paginationControls" class="pagination"></div>
+    </div>
+    <div class="tab-content" data-tab="all_users" style="display: none;">
+  <h2>All Users</h2>
+  <div id="allUsersTable">Loading...</div>
+  <div id="userPaginationControls" class="pagination"></div>
 </div>
+
+
+<div class="tab-content" data-tab="edit_services" style="display: none;">
+  <h2>Edit Services</h2>
+
+  <div id="serviceEditor">Loading...</div>
+  <div id="servicePaginationControls" class="pagination"></div>
+
+  <button onclick="addNewService()" style="margin-top: 1rem; background:#10b981; color:white;">Add New Service</button>
+</div>
+
+<div class="tab-content" data-tab="reviews" style="display: none;">
+  <h2>All Reviews</h2>
+  <div id="reviewsTable">Loading...</div>
+  <div id="reviewsPagination" class="pagination"></div>
+</div>               
+
 
   </div>
 </div>
