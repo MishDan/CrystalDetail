@@ -135,20 +135,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('database/get_gallery_images.php')
-    .then(res => res.json())
-    .then(images => {
-      const grid = document.getElementById('galleryGrid');
-      grid.innerHTML = images.map(img => `
-        <div class="gallery-item" data-service="${img.service}">
-          <img src="${img.image_url}" alt="${img.alt_text}">
-          <div class="gallery-caption">
-            <h3>${img.service}</h3>
-            <p>${img.caption}</p>
-          </div>
-        </div>
-      `).join('');
-    });
-});
 
+  const lang = localStorage.getItem('lang') || 'en';
+
+  fetch(`lang/${lang}.json`)
+    .then(res => res.json())
+    .then(t => {
+      document.querySelector(".hero h1").innerText = t.heroTitle;
+      document.querySelector(".hero p").innerText = t.heroDesc;
+      document.querySelector(".btn-primary").innerText = t.bookNow;
+      document.querySelector(".btn-secondary").innerText = t.ourServices;
+
+      document.querySelector("#services h2").innerText = t.servicesTitle;
+      document.querySelector("#services .section-description").innerText = t.servicesDesc;
+
+      document.querySelector("#gallery h2").innerText = t.galleryTitle;
+      document.querySelector("#gallery .section-description").innerText = t.galleryDesc;
+
+      document.querySelector("#reviews h2").innerText = t.reviewsTitle;
+
+      document.querySelector("#contact h2").innerText = t.contactTitle;
+
+      document.querySelector(".footer-links h3").innerText = t.quickLinks;
+      document.querySelector(".footer-hours h3").innerText = t.businessHours;
+      document.querySelectorAll(".footer-hours li")[0].querySelector("span").innerText = t.mondayFriday;
+      document.querySelectorAll(".footer-hours li")[1].querySelector("span").innerText = t.saturday;
+      document.querySelectorAll(".footer-hours li")[2].querySelector("span").innerText = t.sunday;
+      document.querySelectorAll(".footer-hours li")[2].querySelector("span + span, p").innerText = t.closed;
+    });
+
+
+  
+// Language
+function setLang(lang) {
+    localStorage.setItem('lang', lang);
+    location.reload();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const lang = localStorage.getItem('lang') || 'en';
+  
+    fetch(`database/get_gallery_images.php?lang=${lang}`)
+      .then(res => res.json())
+      .then(images => {
+        const grid = document.getElementById('galleryGrid');
+        grid.innerHTML = images.map(img => `
+          <div class="gallery-item" data-service="${img.service}">
+            <img src="${img.image_url}" alt="${img.alt_text}">
+            <div class="gallery-caption">
+              <h3>${img.service}</h3>
+              <p>${img.caption}</p>
+            </div>
+          </div>
+        `).join('');
+      });
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    const lang = localStorage.getItem('lang') || 'en';
+
+    fetch(`database/get_services.php?lang=${lang}`)
+        .then(res => res.json())
+        .then(services => {
+            const grid = document.querySelector('.services-grid');
+            grid.innerHTML = '';
+
+            services.forEach(service => {
+                grid.innerHTML += `
+                    <div class="service-card">
+                        <div class="service-icon">${service.icon}</div>
+                        <h3>${service.title}</h3>
+                        <p>${service.description}</p>
+                        <div class="service-details">
+                            <span class="price">${service.price}</span>
+                            <span class="duration">${service.duration}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+});

@@ -190,28 +190,37 @@ h2 {
 }
 
 /* Modal styles */
+
+
+  
 .modal {
     display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
-    align-items: center;
     justify-content: center;
-}
-
-.modal-content {
-    background: var(--white);
+    align-items: flex-start;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    padding: 3rem 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    overflow-y: auto;
+  }
+  
+  .modal-content {
+    background: #fff;
+    width: 100%;
+    max-width: 1100px;
+    border-radius: 12px;
     padding: 2rem;
-    border-radius: 10px;
-    position: relative;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: var(--shadow);
-}
+    box-sizing: border-box;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    max-height: 90vh; /* Ограничиваем высоту */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+
+  
 
 .close-modal {
     position: absolute;
@@ -616,6 +625,23 @@ textarea {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    #authModal .modal-content {
+        flex-direction: column;
+        width: 95%;
+      }
+    
+      #authModal .modal-image {
+        height: 200px;
+      }
+    
+      #authModal .modal-image img {
+        height: 100%;
+        border-radius: 12px 12px 0 0;
+      }
+    
+      #authModal .modal-form {
+        padding: 1.5rem;
+      }
     .mobile-menu-btn {
         display: block;
         background: none;
@@ -735,115 +761,173 @@ textarea {
     }
 /* modal */
 
-.modal {
-    display: none;
+
+  
+
+
+.modal-image {
+flex: 1;
+}
+
+.modal-image img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.modal-form {
+flex: 1;
+padding: 2rem;
+position: relative;
+}
+
+.modal-form h2 {
+margin-bottom: 1rem;
+}
+
+.modal-form input {
+display: block;
+width: 100%;
+padding: 0.75rem;
+margin-bottom: 1rem;
+border: 1px solid var(--border-color);
+border-radius: 0.5rem;
+}
+
+.modal-form button {
+background-color: var(--primary-color);
+color: var(--white);
+padding: 0.75rem;
+width: 100%;
+border: none;
+border-radius: 0.5rem;
+font-size: 1rem;
+cursor: pointer;
+}
+
+.modal-form a {
+font-size: 0.9rem;
+color: var(--light-text);
+text-decoration: none;
+}
+
+.modal-form .close {
+position: absolute;
+right: 1rem;
+top: 1rem;
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+
+
+.modal-image img {
+width: 200px;
+border-radius: 10px;
+}
+
+.user-link {
+cursor: pointer;
+font-weight: bold;
+color: #007bff;
+}
+
+#authModal {
     position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* display: flex; */
+    justify-content: center;
+    align-items: flex-start;
+    padding: 3rem 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
     z-index: 9999;
-    left: 0;
-    top: 0;
+    overflow-y: auto;
+}
+
+#authModal .modal-content {
+    background: white;
+    /* display: flex; */
+    flex-direction: row;
     width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-  }
-  
-  .modal-content {
-    display: flex;
-    width: 90%;
     max-width: 900px;
-    margin: 5% auto;
-    background: var(--white);
-    border-radius: 10px;
-    box-shadow: var(--shadow);
+    border-radius: 12px;
     overflow: hidden;
-  }
-  
-  .modal-image {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#authModal .modal-image {
     flex: 1;
-  }
-  
-  .modal-image img {
+    background-color: #f9f9f9;
+}
+
+#authModal .modal-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-  
-  .modal-form {
+}
+
+#authModal .modal-form {
     flex: 1;
     padding: 2rem;
+    display: flex;
+    flex-direction: column;
     position: relative;
-  }
-  
-  .modal-form h2 {
+}
+
+#authModal .modal-form h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #111827;
+}
+
+#authModal .modal-form input {
+    padding: 0.75rem 1rem;
     margin-bottom: 1rem;
-  }
-  
-  .modal-form input {
-    display: block;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
     width: 100%;
+    box-sizing: border-box;
+}
+
+#authModal .modal-form button {
     padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-  }
-  
-  .modal-form button {
-    background-color: var(--primary-color);
-    color: var(--white);
-    padding: 0.75rem;
-    width: 100%;
+    background-color: #1e3a8a;
+    color: white;
+    font-weight: bold;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
-  }
-  
-  .modal-form a {
-    font-size: 0.9rem;
-    color: var(--light-text);
-    text-decoration: none;
-  }
-  
-  .modal-form .close {
+    transition: background-color 0.2s;
+}
+
+#authModal .modal-form button:hover {
+    background-color: #1d4ed8;
+}
+
+#authModal .modal-form .close {
     position: absolute;
-    right: 1rem;
     top: 1rem;
+    right: 1rem;
     font-size: 1.5rem;
     cursor: pointer;
-  }
+    color: #6b7280;
+}
 
+#authModal p {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #374151;
+    margin-top: 1rem;
+}
 
-  .modal {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 999;
-  }
-  
-  .modal-content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-  }
-  
-  .modal-image img {
-    width: 200px;
-    border-radius: 10px;
-  }
-  
-  .user-link {
-    cursor: pointer;
+#authModal p a {
+    color: #2563eb;
+    text-decoration: none;
     font-weight: bold;
-    color: #007bff;
-  }
-  
-
-  .appointment-wrapper {
+}
+    .appointment-wrapper {
     display: flex;
     padding: 2rem;
     max-width: 1100px;
@@ -857,7 +941,8 @@ textarea {
 .sidebar {
     width: 220px;
     border-right: 1px solid #ccc;
-}
+    padding-right: 1rem;
+  }
 .sidebar ul {
     list-style: none;
     padding: 0;
@@ -931,10 +1016,12 @@ textarea {
     margin-bottom: 1rem;
   }
   table th, table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
+    padding: 0.5rem;
+    word-wrap: break-word;
+    white-space: normal;
+    vertical-align: top;
   }
+  
   .pagination {
     display: flex;
     gap: 5px;
@@ -950,53 +1037,71 @@ textarea {
     color: white;
   }
   .modal-content.booking-modal {
-    max-width: 1000px; /* или 90vw */
-    width: 95%;
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+  .appointment-wrapper {
+    display: flex;
+    padding: 2rem;
+    gap: 3rem; /* увеличили с 2rem до 3rem */
+    max-width: 1100px;
+    margin: 2rem auto;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #f9f9f9;
+  }
+  .tab-content {
+    padding-right: 2rem;
   }
   
-  .tab-content {
-    overflow-x: auto;
-    max-width: 100%;
-  }
   
   .tab-content table {
-    min-width: 800px;
-  }
-  #serviceEditor form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  #serviceEditor form label {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  
-  #serviceEditor input,
-  #serviceEditor textarea {
     width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 0.375rem;
+    max-width: 1000px;
+    min-width: 700px; /* чтобы не ломался layout */
+    border-collapse: collapse;
+    
   }
   
-  #serviceEditor button[type="submit"] {
-    grid-column: span 2;
-    padding: 0.5rem 1.25rem;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
+  #serviceEditor form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
   }
-  
-  #serviceEditor button[type="submit"]:hover {
-    background-color: #2563eb;
-  }
-  
+    
+    #serviceEditor form label {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    #serviceEditor input,
+    #serviceEditor textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.375rem;
+    }
+    
+    #serviceEditor button[type="submit"] {
+        grid-column: span 2;
+        padding: 0.5rem 1.25rem;
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 0.375rem;
+        cursor: pointer;
+    }
+    
+    #serviceEditor button[type="submit"]:hover {
+        background-color: #2563eb;
+    }
+    
   .pagination {
     display: flex;
     gap: 0.5rem;
@@ -1166,4 +1271,31 @@ textarea {
     width: 100%;
     border-collapse: collapse;
   }
+
+  
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 2rem;
+    min-height: 0; /* важно для flex-child с scroll */
+  }
+  
+  /* Таблицы и широкие блоки */
+  .tab-content table {
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+  .close-user-modal {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    z-index: 1000;
+  }.modal-content.booking-modal {
+    position: relative;
+  }
+  
   

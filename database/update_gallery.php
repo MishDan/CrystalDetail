@@ -8,8 +8,12 @@ if ($mysqli->connect_error) exit;
 
 $id = (int)$_POST['id'];
 $service = $_POST['service'] ?? '';
-$alt = $_POST['alt_text'] ?? '';
-$caption = $_POST['caption'] ?? '';
+$caption_en = $_POST['caption_en'] ?? '';
+$caption_ru = $_POST['caption_ru'] ?? '';
+$caption_lv = $_POST['caption_lv'] ?? '';
+$alt_en = $_POST['alt_text_en'] ?? '';
+$alt_ru = $_POST['alt_text_ru'] ?? '';
+$alt_lv = $_POST['alt_text_lv'] ?? '';
 
 $image_url = null;
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -20,11 +24,25 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
 }
 
 if ($image_url) {
-    $stmt = $mysqli->prepare("UPDATE gallery SET image_url=?, service=?, alt_text=?, caption=? WHERE id=?");
-    $stmt->bind_param("ssssi", $image_url, $service, $alt, $caption, $id);
+    $stmt = $mysqli->prepare("UPDATE gallery 
+        SET image_url=?, service=?, 
+            caption_en=?, caption_ru=?, caption_lv=?, 
+            alt_text_en=?, alt_text_ru=?, alt_text_lv=? 
+        WHERE id=?");
+
+    $stmt->bind_param("ssssssssi", $image_url, $service,
+        $caption_en, $caption_ru, $caption_lv,
+        $alt_en, $alt_ru, $alt_lv, $id);
 } else {
-    $stmt = $mysqli->prepare("UPDATE gallery SET service=?, alt_text=?, caption=? WHERE id=?");
-    $stmt->bind_param("sssi", $service, $alt, $caption, $id);
+    $stmt = $mysqli->prepare("UPDATE gallery 
+        SET service=?, 
+            caption_en=?, caption_ru=?, caption_lv=?, 
+            alt_text_en=?, alt_text_ru=?, alt_text_lv=? 
+        WHERE id=?");
+
+    $stmt->bind_param("sssssssi", $service,
+        $caption_en, $caption_ru, $caption_lv,
+        $alt_en, $alt_ru, $alt_lv, $id);
 }
 
 $stmt->execute();

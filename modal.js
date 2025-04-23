@@ -473,12 +473,13 @@ function loadAllUsers(page = 1) {
     }
   }
 
+  const lang = localStorage.getItem('lang') || 'en';
 
 
   let currentServicePage = 1;
 
 function loadServices(page = 1) {
-  fetch(`database/get_services_paginated.php?page=${page}`)
+    fetch(`database/get_services_paginated.php?page=${page}&lang=${lang}`)
     .then(res => res.json())
     .then(data => {
       const editor = document.getElementById('serviceEditor');
@@ -493,32 +494,36 @@ function loadServices(page = 1) {
 
       const s = data.services[0];
       editor.innerHTML = `
-      <div class="gallery-edit-form">
-        <form onsubmit="saveService(event, ${s.id})" class="form-left">
-          <label>Title</label>
-          <input name="title" value="${s.title}" required>
-      
-          <label>Description</label>
-          <textarea name="description" required>${s.description}</textarea>
-      
-          <label>Icon</label>
-          <input name="icon" value="${s.icon || ''}">
-      
-          <label>Price</label>
-          <input name="price" value="${s.price || ''}">
-      
-          <label>Duration</label>
-          <input name="duration" value="${s.duration || ''}">
-      
-          <div class="button-group">
-            <button type="submit" class="save-btn">Save</button>
-            <button type="button" onclick="deleteService(${s.id})" class="delete-btn">Delete</button>
-          </div>
-        </form>
+      <form onsubmit="saveService(event, ${s.id})">
+        <label>Title (EN)</label>
+        <input name="title_en" value="${s.title_en || ''}">
     
-        <div class="form-right">
-        </div>
-      </div>
+        <label>Title (RU)</label>
+        <input name="title_ru" value="${s.title_ru || ''}">
+    
+        <label>Title (LV)</label>
+        <input name="title_lv" value="${s.title_lv || ''}">
+    
+        <label>Description (EN)</label>
+        <textarea name="description_en">${s.description_en || ''}</textarea>
+    
+        <label>Description (RU)</label>
+        <textarea name="description_ru">${s.description_ru || ''}</textarea>
+    
+        <label>Description (LV)</label>
+        <textarea name="description_lv">${s.description_lv || ''}</textarea>
+    
+        <label>Icon</label>
+        <input name="icon" value="${s.icon || ''}">
+    
+        <label>Price</label>
+        <input name="price" value="${s.price || ''}">
+    
+        <label>Duration</label>
+        <input name="duration" value="${s.duration || ''}">
+    
+        <button type="submit">Save</button>
+      </form>
     `;
     
     
@@ -657,29 +662,37 @@ function loadGalleryAdmin(page = 1) {
       const g = data.images[0];
       editor.innerHTML = `
       <form onsubmit="saveGalleryImage(event, ${g.id})" class="gallery-edit-form" enctype="multipart/form-data">
+        <div class="form-right">
+          <img src="${g.image_url}" class="gallery-preview" alt="Preview">
+        </div>
         <div class="form-left">
           <label>Upload Image</label>
           <input type="file" name="image" accept="image/*">
-    
+      
           <label>Service</label>
-          <input name="service" value="${g.service || ''}" placeholder="e.g. Exterior Wash">
-    
-          <label>Alt Text</label>
-          <input name="alt_text" value="${g.alt_text || ''}" placeholder="Image alt description">
-    
-          <label>Caption</label>
-          <textarea name="caption" placeholder="Image caption">${g.caption || ''}</textarea>
-    
+          <input name="service" value="${g.service || ''}">
+      
+          <label>Alt Text (EN)</label>
+          <input name="alt_text_en" value="${g.alt_text_en || ''}">
+          <label>Alt Text (RU)</label>
+          <input name="alt_text_ru" value="${g.alt_text_ru || ''}">
+          <label>Alt Text (LV)</label>
+          <input name="alt_text_lv" value="${g.alt_text_lv || ''}">
+      
+          <label>Caption (EN)</label>
+          <textarea name="caption_en">${g.caption_en || ''}</textarea>
+          <label>Caption (RU)</label>
+          <textarea name="caption_ru">${g.caption_ru || ''}</textarea>
+          <label>Caption (LV)</label>
+          <textarea name="caption_lv">${g.caption_lv || ''}</textarea>
+      
           <div class="button-group">
             <button type="submit" class="save-btn">Save</button>
             <button type="button" onclick="deleteGalleryImage(${g.id}, '${g.image_url}')" class="delete-btn">Delete</button>
           </div>
         </div>
-        <div class="form-right">
-          <img src="${g.image_url}" class="gallery-preview" alt="Preview">
-        </div>
       </form>
-    `;
+      `;
 
       pagination.innerHTML = '';
       for (let i = 1; i <= data.total_pages; i++) {
@@ -794,7 +807,6 @@ function deleteGalleryImage(id, imagePath) {
       });
     });
   
-    // === ВЫБОР ЗВЕЗД ===
     stars.forEach(star => {
       star.addEventListener('click', function () {
         const value = parseInt(this.dataset.value);
@@ -805,7 +817,6 @@ function deleteGalleryImage(id, imagePath) {
       });
     });
   
-    // === ОТПРАВКА ФОРМЫ ОТЗЫВА ===
     if (reviewForm) {
       reviewForm.addEventListener('submit', async e => {
         e.preventDefault();

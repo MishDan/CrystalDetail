@@ -1,8 +1,19 @@
 <?php
 $mysqli = new mysqli("localhost", "root", "", "car_users_db");
-$services = [];
+$lang = $_GET['lang'] ?? ($_COOKIE['lang'] ?? 'en');
 
-$result = $mysqli->query("SELECT * FROM services");
+if (!in_array($lang, ['en', 'ru', 'lv'])) {
+    $lang = 'en';
+}
+
+$query = "SELECT id, icon, price, duration, 
+                 title_$lang AS title, 
+                 description_$lang AS description 
+          FROM services";
+
+$services = [];
+$result = $mysqli->query($query);
+
 while ($row = $result->fetch_assoc()) {
     $services[] = $row;
 }

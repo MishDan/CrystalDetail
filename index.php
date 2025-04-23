@@ -39,10 +39,11 @@ if ($loggedIn) {
 
     $stmt->close();
 }
-
+$lang = $_GET['lang'] ?? ($_COOKIE['lang'] ?? 'en');
+$lang = in_array($lang, ['en', 'ru', 'lv']) ? $lang : 'en';
 // Получение списка услуг
 $services = [];
-$res = $mysqli->query("SELECT id, title, icon, description, price, duration FROM services");
+$res = $mysqli->query("SELECT id, icon, price, duration, title_$lang AS title, description_$lang AS description FROM services");
 
 if ($res) {
     while ($row = $res->fetch_assoc()) {
@@ -265,7 +266,12 @@ $mysqli->close();
                         <li><span>Monday - Friday:</span> 8:00 AM - 6:00 PM</li>
                         <li><span>Saturday:</span> 9:00 AM - 5:00 PM</li>
                         <li><span>Sunday:</span> Closed</li>
-                    </ul>
+                        <div class="language-switcher">
+                        <button onclick="setLang('en')">EN</button>
+                        <button onclick="setLang('ru')">RU</button>
+                        <button onclick="setLang('lv')">LV</button>
+                        </div>
+                        </ul>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -317,7 +323,7 @@ $mysqli->close();
 
 <div class="modal" id="userModal" style="display: none;">
   <div class="modal-content booking-modal">
-  <span class="close" onclick="closeUserModal()" style="position:absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer;">&times;</span>
+  <span class="close close-user-modal" onclick="closeUserModal()">&times;</span>
 
     <div class="appointment-wrapper">
       
@@ -443,39 +449,47 @@ $mysqli->close();
     </div>
 
     <div id="allAppointmentsTable">Loading...</div>
-    <div id="paginationControls" class="pagination"></div>
+        <div id="paginationControls" class="pagination"></div>
     </div>
     <div class="tab-content" data-tab="all_users" style="display: none;">
-  <h2>All Users</h2>
-  <div id="allUsersTable">Loading...</div>
-  <div id="userPaginationControls" class="pagination"></div>
-</div>
+        <h2>All Users</h2>
+        <div id="allUsersTable">Loading...</div>
+        <div id="userPaginationControls" class="pagination"></div>
+    </div>
 
 
-<div class="tab-content" data-tab="edit_services" style="display: none;">
-  <h2>Edit Services</h2>
+    <div class="tab-content" data-tab="edit_services" style="display: none;">
+        <h2>Edit Services</h2>
 
-  <div id="serviceEditor">Loading...</div>
-  <div id="servicePaginationControls" class="pagination"></div>
+        <!-- Добавлена обёртка с фиксированной высотой и скроллом -->
+        <div id="serviceEditorWrapper" style="max-height: 60vh; overflow-y: auto; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem;">
+            <div id="serviceEditor">Loading...</div>
+        </div>
 
-  <button onclick="addNewService()" style="margin-top: 1rem; background:#10b981; color:white;">Add New Service</button>
-</div>
+        <div id="servicePaginationControls" class="pagination"></div>
 
-<div class="tab-content" data-tab="reviews" style="display: none;">
-  <h2>All Reviews</h2>
-  <div id="reviewsTable">Loading...</div>
-  <div id="reviewsPagination" class="pagination"></div>
-</div>        
+        <button onclick="addNewService()" style="margin-top: 1rem; background:#10b981; color:white;">Add New Service</button>
+    </div>
 
 
-<div class="tab-content" data-tab="gallery_admin" style="display: none;">
-  <h2>Edit Gallery</h2>
+    <div class="tab-content" data-tab="reviews" style="display: none;">
+    <h2>All Reviews</h2>
+    <div id="reviewsTable">Loading...</div>
+    <div id="reviewsPagination" class="pagination"></div>
+    </div>        
 
-  <div id="galleryAdminEditor">Loading...</div>
-  <div id="galleryPaginationControls" class="pagination"></div>
 
-  <button onclick="addNewGalleryImage()" style="margin-top: 1rem; background:#10b981; color:white;">Add New Image</button>
-</div>
+    <div class="tab-content" data-tab="gallery_admin" style="display: none;">
+        <h2>Edit Gallery</h2>
+
+        <div id="galleryScrollWrapper" style="max-height: 60vh; overflow-y: auto; padding-right: 1rem; margin-bottom: 1rem;">
+            <div id="galleryAdminEditor">Loading...</div>
+        </div>
+
+        <div id="galleryPaginationControls" class="pagination"></div>
+        <button onclick="addNewGalleryImage()" style="margin-top: 1rem; background:#10b981; color:white;">Add New Image</button>
+    </div>
+
 
 
 
@@ -525,6 +539,35 @@ $mysqli->close();
       openModal();
     }
   }
+</script>
+<script>
+  const lang = localStorage.getItem('lang') || 'en';
+
+  fetch(`lang/${lang}.json`)
+    .then(res => res.json())
+    .then(t => {
+      document.querySelector(".hero h1").innerText = t.heroTitle;
+      document.querySelector(".hero p").innerText = t.heroDesc;
+      document.querySelector(".btn-primary").innerText = t.bookNow;
+      document.querySelector(".btn-secondary").innerText = t.ourServices;
+
+      document.querySelector("#services h2").innerText = t.servicesTitle;
+      document.querySelector("#services .section-description").innerText = t.servicesDesc;
+
+      document.querySelector("#gallery h2").innerText = t.galleryTitle;
+      document.querySelector("#gallery .section-description").innerText = t.galleryDesc;
+
+      document.querySelector("#reviews h2").innerText = t.reviewsTitle;
+
+      document.querySelector("#contact h2").innerText = t.contactTitle;
+
+      document.querySelector(".footer-links h3").innerText = t.quickLinks;
+      document.querySelector(".footer-hours h3").innerText = t.businessHours;
+      document.querySelectorAll(".footer-hours li")[0].querySelector("span").innerText = t.mondayFriday;
+      document.querySelectorAll(".footer-hours li")[1].querySelector("span").innerText = t.saturday;
+      document.querySelectorAll(".footer-hours li")[2].querySelector("span").innerText = t.sunday;
+      document.querySelectorAll(".footer-hours li")[2].querySelector("span + span, p").innerText = t.closed;
+    });
 </script>
 
 </body>
