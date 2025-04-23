@@ -1,3 +1,4 @@
+
 function openModal() {
     document.getElementById('authModal').style.display = 'flex';
 }

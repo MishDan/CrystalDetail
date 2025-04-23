@@ -1161,4 +1161,9 @@ textarea {
     max-width: 900px;
     border-collapse: collapse;
   }
+  .scroll-wrapper table {
+    min-width: 800px;
+    width: 100%;
+    border-collapse: collapse;
+  }
   

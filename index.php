@@ -110,8 +110,8 @@ $mysqli->close();
             <h1>Professional Car Detailing Services</h1>
             <p>Bring back your vehicle's showroom shine with our premium detailing services. Expert care for every detail of your car.</p>
             <div class="hero-buttons">
-                <a href="#contact" class="btn btn-primary">Book Now</a>
-                <a href="#services" class="btn btn-secondary">Our Services</a>
+            <a href="javascript:void(0)" onclick="handleBookNowClick()" class="btn btn-primary">Book Now</a>
+            <a href="#services" class="btn btn-secondary">Our Services</a>
             </div>
         </div>
     </section>
@@ -162,6 +162,7 @@ $mysqli->close();
                 <button id="prevBtn">← Prev</button>
                 <button id="nextBtn">Next →</button>
             </div>
+        </div>
     </section>
 
     <!-- Contact Section -->
@@ -514,6 +515,17 @@ $mysqli->close();
 </div>
       <script src="script.js"></script>
       <script src="modal.js"></script>
+      <script>
+  const isLoggedIn = <?= json_encode($loggedIn) ?>;
+
+  function handleBookNowClick() {
+    if (isLoggedIn) {
+      openUserModal();
+    } else {
+      openModal();
+    }
+  }
+</script>
 
 </body>
 </html>

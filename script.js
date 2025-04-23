@@ -1,6 +1,7 @@
 let reviews = [];
 let currentPage = 0;
 const perPage = 2;
+let autoScrollInterval;
 
 function renderReviews() {
     const grid = document.getElementById('reviews-grid');
@@ -13,10 +14,12 @@ function renderReviews() {
     current.forEach(review => {
         let fullStars = '★'.repeat(Math.floor(review.stars));
         let halfStar = review.stars % 1 !== 0 ? '½' : '';
+
         grid.innerHTML += `
             <div class="review-card">
                 <div class="review-header">
-                    <img src="${review.image_url}" alt="${review.name}">
+                    <img src="${review.image_url}" alt="${review.name}"
+                         onerror="this.onerror=null; this.src='Images_db/icon_default_user.png';">
                     <div class="review-info">
                         <h3>${review.name}</h3>
                         <div class="stars">${fullStars}${halfStar}</div>
@@ -34,7 +37,9 @@ function loadReviews() {
         .then(res => res.json())
         .then(data => {
             reviews = data;
+            currentPage = 0;
             renderReviews();
+            startAutoScroll(); // Запуск автоскролла после загрузки
         });
 }
 
@@ -51,6 +56,21 @@ document.getElementById('nextBtn').addEventListener('click', () => {
         renderReviews();
     }
 });
+
+function startAutoScroll() {
+    clearInterval(autoScrollInterval); // если уже было запущено — сбрасываем
+
+    autoScrollInterval = setInterval(() => {
+        if ((currentPage + 1) * perPage < reviews.length) {
+            currentPage++;
+        } else {
+            currentPage = 0; // возврат к началу
+        }
+        renderReviews();
+    }, 10000); // 10 секунд
+}
+
+loadReviews();
 
 loadReviews();
 
