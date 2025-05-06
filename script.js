@@ -2,6 +2,7 @@ let reviews = [];
 let currentPage = 0;
 const perPage = 2;
 let autoScrollInterval;
+const lang = localStorage.getItem('lang') || 'en';
 
 function renderReviews() {
     const grid = document.getElementById('reviews-grid');
@@ -135,34 +136,123 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+fetch(`lang/${lang}.json`)
+  .then(res => res.json())
+  .then(t => {
+    document.querySelector("title").innerText = t.siteTitle;
+    document.querySelector(".logo-text").innerText = t.logoText;
+    const navItems = document.querySelectorAll(".nav-list li a");
+    if (navItems.length >= 5) {
+      navItems[0].innerText = t.nav.home;
+      navItems[1].innerText = t.nav.services;
+      navItems[2].innerText = t.nav.gallery;
+      navItems[3].innerText = t.nav.reviews;
+      navItems[4].innerText = t.nav.contact;
+    }
 
-  const lang = localStorage.getItem('lang') || 'en';
+    document.querySelector(".hero h1").innerText = t.hero.title;
+    document.querySelector(".hero p").innerText = t.hero.desc;
+    document.querySelector(".btn-primary").innerText = t.hero.bookNow;
+    document.querySelector(".btn-secondary").innerText = t.hero.ourServices;
 
-  fetch(`lang/${lang}.json`)
-    .then(res => res.json())
-    .then(t => {
-      document.querySelector(".hero h1").innerText = t.heroTitle;
-      document.querySelector(".hero p").innerText = t.heroDesc;
-      document.querySelector(".btn-primary").innerText = t.bookNow;
-      document.querySelector(".btn-secondary").innerText = t.ourServices;
+    document.querySelector("#services h2").innerText = t.services.title;
+    document.querySelector("#services .section-description").innerText = t.services.desc;
 
-      document.querySelector("#services h2").innerText = t.servicesTitle;
-      document.querySelector("#services .section-description").innerText = t.servicesDesc;
+    document.querySelector("#gallery h2").innerText = t.gallery.title;
+    document.querySelector("#gallery .section-description").innerText = t.gallery.desc;
 
-      document.querySelector("#gallery h2").innerText = t.galleryTitle;
-      document.querySelector("#gallery .section-description").innerText = t.galleryDesc;
+    document.querySelector("#video-demo h2").innerText = t.video.title;
+    document.querySelector("#video-demo p").innerText = t.video.desc;
 
-      document.querySelector("#reviews h2").innerText = t.reviewsTitle;
 
-      document.querySelector("#contact h2").innerText = t.contactTitle;
+    document.querySelector("#reviews h2").innerText = t.reviews.title;
+    document.querySelector("#prevBtn").innerText = t.reviews.prev;
+    document.querySelector("#nextBtn").innerText = t.reviews.next;
 
-      document.querySelector(".footer-links h3").innerText = t.quickLinks;
-      document.querySelector(".footer-hours h3").innerText = t.businessHours;
-      document.querySelectorAll(".footer-hours li")[0].querySelector("span").innerText = t.mondayFriday;
-      document.querySelectorAll(".footer-hours li")[1].querySelector("span").innerText = t.saturday;
-      document.querySelectorAll(".footer-hours li")[2].querySelector("span").innerText = t.sunday;
-      document.querySelectorAll(".footer-hours li")[2].querySelector("span + span, p").innerText = t.closed;
+
+    document.querySelector("#contact h2").innerText = t.contact.title;
+    document.querySelector(".contact-info h3").innerText = t.contact.getInTouch;
+    const contactLabels = document.querySelectorAll(".contact-info h4");
+    contactLabels[0].innerText = t.contact.phone;
+    contactLabels[1].innerText = t.contact.email;
+    contactLabels[2].innerText = t.contact.location;
+
+
+    document.querySelector("label[for='name']").innerText = t.contact.name;
+    document.querySelector("label[for='email']").innerText = t.contact.emailAddress;
+    document.querySelector("label[for='phone']").innerText = t.contact.phoneNumber;
+    document.querySelector("label[for='service']").innerText = t.contact.interestedService;
+    document.querySelector("#service option").innerText = t.contact.selectService;
+
+    const serviceSelect = document.querySelector("#service");
+    if (serviceSelect && t.contact.servicesList) {
+      [...serviceSelect.options].slice(1).forEach(opt => opt.remove());
+      t.contact.servicesList.forEach(service => {
+        const option = document.createElement("option");
+        option.value = service.toLowerCase().replace(/ /g, "-");
+        option.innerText = service;
+        serviceSelect.appendChild(option);
+      });
+    }
+
+    document.querySelector("label[for='message']").innerText = t.contact.message;
+    document.querySelector("#contact-form button").innerText = t.contact.sendMessage;
+
+
+    document.querySelector(".footer-info p").innerText = t.footer.about;
+    document.querySelector(".footer-links h3").innerText = t.footer.quickLinks;
+    document.querySelector(".footer-hours h3").innerText = t.footer.businessHours;
+    document.querySelectorAll(".footer-hours li")[0].querySelector("span").innerText = t.footer.mondayFriday;
+    document.querySelectorAll(".footer-hours li")[1].querySelector("span").innerText = t.footer.saturday;
+    document.querySelectorAll(".footer-hours li")[2].querySelector("span").innerText = t.footer.sunday;
+    document.querySelector(".footer-bottom p").innerText = t.footer.bottomNote;
+
+
+
+    document.getElementById("formTitle").innerText = t.modal.login;
+    document.querySelector("input[name='gmail']").placeholder = t.modal.usernameOrGmail;
+    document.querySelector("input[name='password']").placeholder = t.modal.password;
+    document.querySelector("#authForm button").innerText = t.modal.submit;
+    document.getElementById("registerLink").innerText = t.modal.noAccount;
+    document.getElementById("loginLink").innerText = t.modal.haveAccount;
+
+
+    
+
+    const regFields = document.querySelectorAll("#registerFields input");
+    if (regFields.length === 6 && t.modal.registerFields) {
+
+        regFields.forEach((input, i) => {
+        input.placeholder = t.modal.registerFields[i] || input.placeholder;
+      });
+    }
+
+    // User Panel
+    document.querySelector(".sidebar h3").innerText = `${t.userPanel.hello},`;
+    const tabs = document.querySelectorAll(".sidebar ul li.tab-btn");
+    const tabNames = [
+      t.userPanel.createAppointment,
+      t.userPanel.myHistory,
+      t.userPanel.editProfile,
+
+    
+      t.userPanel.writeReview,
+      t.userPanel.allAppointments,
+      t.userPanel.allUsers,
+      t.userPanel.editServices,
+      t.userPanel.reviews,
+      t.userPanel.gallery
+    ];
+
+
+    
+    tabs.forEach((tab, i) => {
+      if (tabNames[i]) tab.innerText = tabNames[i];
     });
+    document.querySelector(".sidebar button").innerText = t.userPanel.logout;
+
+  });
+
 
 
   
@@ -173,7 +263,6 @@ function setLang(lang) {
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const lang = localStorage.getItem('lang') || 'en';
   
     fetch(`database/get_gallery_images.php?lang=${lang}`)
       .then(res => res.json())
@@ -191,7 +280,6 @@ function setLang(lang) {
       });
   });
   document.addEventListener('DOMContentLoaded', () => {
-    const lang = localStorage.getItem('lang') || 'en';
 
     fetch(`database/get_services.php?lang=${lang}`)
         .then(res => res.json())

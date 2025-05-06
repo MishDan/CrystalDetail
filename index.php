@@ -64,6 +64,8 @@ $mysqli->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CrystalDetail - Professional Car Detailing</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="..." crossorigin="anonymous" />
+
 </head>
 <body>
     <!-- Header -->
@@ -93,7 +95,7 @@ $mysqli->close();
         </button>
     <?php else: ?>
         <button class="open-modal-btn" onclick="openModal()">
-            Register or Login
+        <i class="fa-solid fa-right-to-bracket"></i>
         </button>
     <?php endif; ?>
 </div>
@@ -151,7 +153,21 @@ $mysqli->close();
             <div class="gallery-grid" id="galleryGrid"></div>
         </div>
     </section>
-
+<!-- Video section -->
+    <section id="video-demo" class="video-demo">
+  <div class="container">
+    <h2>How We Wash Cars</h2>
+    <p class="section-description">Watch our professional detailing in action.</p>
+    <div class="video-wrapper">
+      <iframe 
+        src="https://www.youtube.com/embed/mnj_EeaNvjI" 
+        title="YouTube car wash demo"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+    </div>
+    </div>
+    </section>
 
                 
     <!-- Reviews Section -->
@@ -532,42 +548,22 @@ $mysqli->close();
       <script>
   const isLoggedIn = <?= json_encode($loggedIn) ?>;
 
-  function handleBookNowClick() {
-    if (isLoggedIn) {
-      openUserModal();
-    } else {
-      openModal();
-    }
-  }
-</script>
-<script>
-  const lang = localStorage.getItem('lang') || 'en';
+//   function handleBookNowClick() {
+//     if (isLoggedIn) {
+//       openUserModal();
+//     } else {
+//       openModal();
+//     }
+//   }
 
-  fetch(`lang/${lang}.json`)
-    .then(res => res.json())
-    .then(t => {
-      document.querySelector(".hero h1").innerText = t.heroTitle;
-      document.querySelector(".hero p").innerText = t.heroDesc;
-      document.querySelector(".btn-primary").innerText = t.bookNow;
-      document.querySelector(".btn-secondary").innerText = t.ourServices;
 
-      document.querySelector("#services h2").innerText = t.servicesTitle;
-      document.querySelector("#services .section-description").innerText = t.servicesDesc;
+function openModal() {
+    document.getElementById('authModal').style.display = 'flex';
+}
 
-      document.querySelector("#gallery h2").innerText = t.galleryTitle;
-      document.querySelector("#gallery .section-description").innerText = t.galleryDesc;
-
-      document.querySelector("#reviews h2").innerText = t.reviewsTitle;
-
-      document.querySelector("#contact h2").innerText = t.contactTitle;
-
-      document.querySelector(".footer-links h3").innerText = t.quickLinks;
-      document.querySelector(".footer-hours h3").innerText = t.businessHours;
-      document.querySelectorAll(".footer-hours li")[0].querySelector("span").innerText = t.mondayFriday;
-      document.querySelectorAll(".footer-hours li")[1].querySelector("span").innerText = t.saturday;
-      document.querySelectorAll(".footer-hours li")[2].querySelector("span").innerText = t.sunday;
-      document.querySelectorAll(".footer-hours li")[2].querySelector("span + span, p").innerText = t.closed;
-    });
+function openUserModal() {
+    document.getElementById('userModal').style.display = 'flex';
+}
 </script>
 
 </body>

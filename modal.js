@@ -473,7 +473,6 @@ function loadAllUsers(page = 1) {
     }
   }
 
-  const lang = localStorage.getItem('lang') || 'en';
 
 
   let currentServicePage = 1;

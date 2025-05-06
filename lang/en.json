@@ -1,19 +1,109 @@
 {
-    "heroTitle": "Professional Car Detailing Services",
-    "heroDesc": "Bring back your vehicle's showroom shine with our premium detailing services. Expert care for every detail of your car.",
+  "siteTitle": "CrystalDetail - Professional Car Detailing",
+  "logoText": "CrystalDetail",
+  "nav": {
+    "home": "Home",
+    "services": "Our Services",
+    "gallery": "Gallery",
+    "reviews": "Reviews",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Professional Car Detailing Services",
+    "desc": "Bring back your vehicle's showroom shine with our premium detailing services. Expert care for every detail of your car.",
     "bookNow": "Book Now",
-    "ourServices": "Our Services",
-    "servicesTitle": "Our Services",
-    "servicesDesc": "Discover our comprehensive range of detailing services designed to restore and protect your vehicle.",
-    "galleryTitle": "Gallery",
-    "galleryDesc": "Browse our portfolio of meticulously detailed vehicles.",
-    "reviewsTitle": "Customer Reviews",
-    "contactTitle": "Ask us a question",
+    "ourServices": "Our Services"
+  },
+  "services": {
+    "title": "Our Services",
+    "desc": "Discover our comprehensive range of detailing services designed to restore and protect your vehicle."
+  },
+  "gallery": {
+    "title": "Gallery",
+    "desc": "Browse our portfolio of meticulously detailed vehicles."
+  },
+  "video": {
+    "title": "How We Wash Cars",
+    "desc": "Watch our professional detailing in action."
+  },
+  "reviews": {
+    "title": "Customer Reviews",
+    "prev": "← Prev",
+    "next": "Next →"
+  },
+  "contact": {
+    "title": "Ask us a question",
+    "getInTouch": "Get In Touch",
+    "phone": "Phone",
+    "email": "Email",
+    "location": "Location",
+    "name": "Your Name*",
+    "emailAddress": "Email Address*",
+    "phoneNumber": "Phone Number",
+    "interestedService": "Service Interested In",
+    "selectService": "Select a service",
+    "servicesList": [
+      "Exterior Wash",
+      "Interior Cleaning",
+      "Polishing",
+      "Ceramic Coating",
+      "Scratch Touch-ups",
+      "Paint Protection Film"
+    ],
+    "message": "Your Message*",
+    "sendMessage": "Send Message"
+  },
+  "footer": {
+    "about": "Professional car detailing services with a passion for perfection. We bring back the showroom shine to every vehicle we touch.",
     "quickLinks": "Quick Links",
     "businessHours": "Business Hours",
     "mondayFriday": "Monday - Friday:",
     "saturday": "Saturday:",
     "sunday": "Sunday:",
-    "closed": "Closed"
+    "bottomNote": "© 2024 CrystalDetail. All rights reserved."
+  },
+  "modal": {
+    "login": "Login",
+    "registerFields": [
+      "First Name", "Last Name", "Email", "Car Make", "Car Model", "Phone Number"
+    ],
+    "usernameOrGmail": "Username or Gmail",
+    "password": "Password",
+    "submit": "Submit",
+    "noAccount": "Don't have an account? Register here",
+    "haveAccount": "Already have an account? Login here"
+  },
+  "userPanel": {
+    "hello": "Hello",
+    "createAppointment": "Create Appointment",
+    "myHistory": "My History",
+    "editProfile": "Edit Profile",
+    "writeReview": "Create review",
+    "allAppointments": "All Appointments",
+    "allUsers": "All Users",
+    "editServices": "Services",
+    "reviews": "Reviews",
+    "gallery": "Gallery",
+    "logout": "Logout",
+    "profileImage": "Profile Image",
+    "clickToChange": "Click to change",
+    "saveChanges": "Save Changes",
+    "resetPassword": "Reset Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "changePassword": "Change Password",
+    "loading": "Loading...",
+    "selectService": "Select Service",
+    "date": "Date",
+    "time": "Time",
+    "confirmBooking": "Confirm Booking",
+    "allReviews": "All Reviews",
+    "editGallery": "Edit Gallery",
+    "addImage": "Add New Image",
+    "addService": "Add New Service",
+    "writeReviewTitle": "Write a Review",
+    "rating": "Rating",
+    "yourReview": "Your Review",
+    "submitReview": "Submit Review"
   }
-  
+}
