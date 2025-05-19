@@ -31,4 +31,4 @@
 1. **Klonē repozitoriju:**
 
    ```bash
-   git clone https://github.com/tavs-lietotajvards/CrystalDetail.git
+   https://github.com/MishDan/CrystalDetail.git
