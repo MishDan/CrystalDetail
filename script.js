@@ -40,7 +40,7 @@ function loadReviews() {
             reviews = data;
             currentPage = 0;
             renderReviews();
-            startAutoScroll(); // Запуск автоскролла после загрузки
+            startAutoScroll();
         });
 }
 
@@ -139,6 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
 fetch(`lang/${lang}.json`)
   .then(res => res.json())
   .then(t => {
+
+
+
+    
     document.querySelector("title").innerText = t.siteTitle;
     document.querySelector(".logo-text").innerText = t.logoText;
     const navItems = document.querySelectorAll(".nav-list li a");
@@ -205,7 +209,52 @@ fetch(`lang/${lang}.json`)
     document.querySelectorAll(".footer-hours li")[0].querySelector("span").innerText = t.footer.mondayFriday;
     document.querySelectorAll(".footer-hours li")[1].querySelector("span").innerText = t.footer.saturday;
     document.querySelectorAll(".footer-hours li")[2].querySelector("span").innerText = t.footer.sunday;
-    document.querySelector(".footer-bottom p").innerText = t.footer.bottomNote;
+    document.querySelector(".footer-bottom p").innerText = t.foot
+
+
+      document.querySelector('[data-tab="edit"] h2').innerText = t.userPanel.editProfile;
+      document.querySelector("label[for='profileImageInput']").innerText = t.userPanel.profileImage;
+      document.getElementById('previewImage').nextElementSibling.innerText = t.userPanel.clickToChange;
+      
+      document.querySelector("label[for='first_name']").innerText = t.userPanel.firstName || t.modal.registerFields[0];
+      document.querySelector("label[for='last_name']").innerText = t.userPanel.lastName || t.modal.registerFields[1];
+      document.querySelector("label[for='username']").innerText = t.userPanel.usernameOrGmail || "Username";
+      document.querySelector("label[for='phonee']").innerText = t.userPanel.phone;
+      document.querySelector("label[for='car_makee']").innerText = t.userPanel.carMake ;
+      document.querySelector("label[for='car_modele']").innerText = t.userPanel.carModel;
+      document.querySelector("#saveChangesBtn").innerText = t.userPanel.saveChanges;
+      document.querySelector("#resetPasswordLink").innerText = t.userPanel.newPassword;
+      document.querySelector("#changePasswordBtn").innerText = t.userPanel.changePassword;
+
+
+      document.querySelector(".appointment-form h2").innerText = t.userPanel.createAppointment || t.modal.registerFields[4];
+      
+      document.querySelector('[data-tab="write-review"] h2').innerText = t.userPanel.writeReview;
+      const labels = document.querySelectorAll('[data-tab="write-review"] label');
+      labels[0].innerText = t.userPanel.selectService;
+      labels[1].innerText = t.userPanel.rating;
+      labels[2].innerText = t.userPanel.yourReview;
+      document.querySelector('[data-tab="write-review"] button').innerText = t.userPanel.submitReview;
+      document.querySelector('[data-tab="write-review"] h2').innerText = t.userPanel.writeReview;
+      document.querySelector('[data-tab="write-review"] h2').innerText = t.userPanel.writeReview;
+      
+      // document.querySelector(".content .firstreviewlabel").innerText = t.userPanel.hello || t.modal.registerFields[4];
+      // document.querySelector(".reviewform").innerText = t.userPanel.createAppointment || t.modal.registerFields[4];
+      // document.querySelector(".appointment-form h2").innerText = t.userPanel.createAppointment || t.modal.registerFields[4];
+
+    document.querySelector("label[for='service_id']").innerText = t.userPanel.selectService || t.modal.registerFields[4];
+    document.querySelector("label[for='dateInput']").innerText = t.userPanel.date || t.modal.registerFields[4];
+    document.querySelector("label[for='timeInput']").innerText = t.userPanel.time || t.modal.registerFields[4];
+
+
+      document.querySelector("button[type='submit']").innerText = t.userPanel.saveChanges;
+      document.querySelector("a[href='#']").innerText = t.userPanel.resetPassword;
+
+      // Reset Password form
+      document.querySelector("input[name='current_password']").placeholder = t.userPanel.currentPassword;
+      document.querySelector("input[name='new_password']").placeholder = t.userPanel.newPassword;
+      document.querySelector("#passwordResetForm button").innerText = t.userPanel.changePassword;
+
 
 
 
@@ -216,6 +265,29 @@ fetch(`lang/${lang}.json`)
     document.getElementById("registerLink").innerText = t.modal.noAccount;
     document.getElementById("loginLink").innerText = t.modal.haveAccount;
 
+    
+
+// Перевод вкладки "Create Appointment"
+
+    
+
+
+    // Заполнить select #service_id с учётом выбранного языка
+fetch(`database/get_services.php?lang=${lang}`)
+  .then(res => res.json())
+  .then(services => {
+    const dropdown = document.getElementById('service_id');
+    if (!dropdown) return;
+
+    dropdown.innerHTML = `<option value="">${t.appointment.selectService}</option>`;
+    services.forEach(service => {
+      const option = document.createElement("option");
+      option.value = service.id;
+      option.textContent = service.title;
+      dropdown.appendChild(option);
+      
+    });
+  });
 
     
 
@@ -256,11 +328,7 @@ fetch(`lang/${lang}.json`)
 
 
   
-// Language
-function setLang(lang) {
-    localStorage.setItem('lang', lang);
-    location.reload();
-  }
+
 
   document.addEventListener('DOMContentLoaded', () => {
   
@@ -281,24 +349,29 @@ function setLang(lang) {
   });
   document.addEventListener('DOMContentLoaded', () => {
 
-    fetch(`database/get_services.php?lang=${lang}`)
-        .then(res => res.json())
-        .then(services => {
-            const grid = document.querySelector('.services-grid');
-            grid.innerHTML = '';
 
-            services.forEach(service => {
-                grid.innerHTML += `
-                    <div class="service-card">
-                        <div class="service-icon">${service.icon}</div>
-                        <h3>${service.title}</h3>
-                        <p>${service.description}</p>
-                        <div class="service-details">
-                            <span class="price">${service.price}</span>
-                            <span class="duration">${service.duration}</span>
-                        </div>
-                    </div>
-                `;
-            });
-        });
 });
+// Language
+function setLang(lang) {
+    localStorage.setItem('lang', lang);
+    location.reload();
+  }
+  function translateEditProfileTab(t) {
+  document.querySelector("#editProfileTitle").innerText = t.userPanel.editProfile;
+  document.querySelector("label[for='profileImageInput']").innerText = t.userPanel.profileImage;
+  document.getElementById('previewImage').nextElementSibling.innerText = t.userPanel.clickToChange;
+
+  document.querySelector("label[for='first_name']").innerText = t.userPanel.firstName;
+  document.querySelector("label[for='last_name']").innerText = t.userPanel.lastName;
+  document.querySelector("label[for='username']").innerText = t.userPanel.usernameOrGmail;
+  document.querySelector("label[for='phone']").innerText = t.userPanel.phone;
+  document.querySelector("label[for='car_make']").innerText = t.userPanel.carMake;
+  document.querySelector("label[for='car_model']").innerText = t.userPanel.carModel;
+
+  document.querySelector("#saveChangesBtn").innerText = t.userPanel.saveChanges;
+  document.querySelector("#resetPasswordLink").innerText = t.userPanel.resetPassword;
+
+  document.querySelector("input[name='current_password']").placeholder = t.userPanel.currentPassword;
+  document.querySelector("input[name='new_password']").placeholder = t.userPanel.newPassword;
+  document.querySelector("#passwordResetForm button").innerText = t.userPanel.changePassword;
+}

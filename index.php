@@ -332,6 +332,10 @@ $mysqli->close();
 
         <p id="registerLink"><a href="#" onclick="toggleForm(event)">Don't have an account? Register here</a></p>
         <p id="loginLink" style="display: none;"><a href="#" onclick="toggleForm(event)">Already have an account? Login here</a></p>
+<p id="registerLink">
+        <p id="registerLink"><a href="#" onclick="toggleForm(event)">Don't have an account? Register here</a></p>
+</p>
+
       </form>
     </div>
   </div>
@@ -375,87 +379,78 @@ $mysqli->close();
       <div class="tabs-container">
 
         <!-- Create Appointment Tab -->
-        <div class="appointment-form tab-content" data-tab="create" style="display: block;">
-          <h2>Create Appointment</h2>
-          <form id="bookingForm">
-            <label>Car Model</label>
-            <input type="text" name="car_model" value="<?= htmlspecialchars($carModelValue) ?>" required>
+       <div class="appointment-form tab-content" data-tab="create">
+        <h2>Create Appointment</h2>
+        <form id="bookingForm">
+            <label for="car_modele">Car Model</label>
+            <input type="text" id="car_model" name="car_model" required>
 
-            <label>Service</label>
-            <select name="service_id" required>
-              <option value="">Select Service</option>
-              <?php foreach ($services as $service): ?>
-                <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['title']) ?></option>
-              <?php endforeach; ?>
+            <label for="service_id">Service</label>
+            <select name="service_id" id="service_id" required>
+            <option value="">Select Service</option>
             </select>
 
-            <label>Date</label>
-            <input type="date" name="date" id="dateInput" required>
+            <label for="dateInput">Date</label>
+            <input type="date" id="dateInput" name="date" required>
 
-            <label>Time</label>
-            <select name="time" id="timeInput" required></select>
+            <label for="timeInput">Time</label>
+            <select id="timeInput" name="time" required></select>
 
             <div class="message" id="bookingError"></div>
             <div class="message success" id="bookingSuccess"></div>
 
             <button type="submit">Confirm Booking</button>
-          </form>
+        </form>
         </div>
 
         <!-- My History Tab -->
         <div class="appointment-history tab-content" data-tab="history" style="display: none;">
-          <h2>My Appointments</h2>
+          <h2> </h2>
           <div id="historyContent">Loading...</div>
         </div>
+        
+        
+<!-- Edit Profile Tab -->
+<div class="appointment-edit tab-content" data-tab="edit" style="display: none;">
+  <div class="profile-edit-wrapper">
+    <h2 id="editProfileTitle">Edit Profile</h2>
 
-        <!-- Edit Profile Tab -->
-        <div class="appointment-edit tab-content" data-tab="edit" style="display: none;">
-            <h2>Edit Profile</h2>
-            <form id="profileForm" enctype="multipart/form-data">
-            <label for="profileImageInput">Profile Image</label>
-            <input type="file" id="profileImageInput" name="profile_image" accept="image/*" style="display:none">
-            <div style="cursor:pointer; width: 120px;" onclick="document.getElementById('profileImageInput').click()">
-            <img
-                id="previewImage"
-                src="Images_db/<?= $profileImage ?? 'icon_default_user.png' ?>"
-                alt="Profile image"
-                style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;"
-                onerror="this.onerror=null; this.src='Images_db/icon_default_user.png';"
-                />            
-            <p style="font-size: 12px; text-align:center; color: #666;">Click to change</p>
-            </div>
+    <form id="profileForm" enctype="multipart/form-data">
+      <div class="profile-img-wrapper" onclick="document.getElementById('profileImageInput').click()" style="cursor:pointer">
+        <input type="file" id="profileImageInput" name="profile_image" accept="image/*" style="display:none">
+        <img id="previewImage" src="Images_db/<?= htmlspecialchars($profileImage ?? 'icon_default_user.png') ?>" alt="Profile image"
+             onerror="this.onerror=null; this.src='Images_db/icon_default_user.png';">
+        <p style="font-size: 12px; color: #666;">Click to change</p>
+      </div>
 
-            <!-- Остальные поля -->
-            <input type="text" name="first_name" value="<?= htmlspecialchars($firstName) ?>" required>
-            <input type="text" name="last_name" value="<?= htmlspecialchars($lastName) ?>" required>
-            <input type="text" name="username" value="<?= htmlspecialchars($username) ?>" required>
-            <input type="text" name="phone" value="<?= htmlspecialchars($phone) ?>">
-            <input type="text" name="car_make" value="<?= htmlspecialchars($carMake) ?>">
-            <input type="text" name="car_model" value="<?= htmlspecialchars($carModel) ?>">
+      <div class="profile-grid">
+        <input type="text" name="first_name" placeholder="First Name" value="<?= htmlspecialchars($firstName) ?>" required>
+        <input type="text" name="last_name" placeholder="Last Name" value="<?= htmlspecialchars($lastName) ?>" required>
+        <input type="text" name="username" placeholder="Username or Gmail" value="<?= htmlspecialchars($username) ?>" required>
+        <input type="text" name="phone" placeholder="Phone Number" value="<?= htmlspecialchars($phone) ?>">
+        <input type="text" name="car_make" placeholder="Car Make" value="<?= htmlspecialchars($carMake) ?>">
+        <input type="text" name="car_model" placeholder="Car Model" value="<?= htmlspecialchars($carModel) ?>">
+      </div>
 
-            <button type="submit">Save Changes</button>
-            </form>
+      <button type="submit" id="saveChangesBtn">Save Changes</button>
+    </form>
 
+    <div style="text-align: center;">
+      <a href="#" onclick="togglePasswordReset(event)" id="resetPasswordLink">New Password</a>
+    </div>
 
-                <p style="margin-top: 10px; text-align: center;">
-                <a href="#" onclick="togglePasswordReset(event)">Reset Password</a>
-                </p>
-            </form>
+    <form id="passwordResetForm">
+      <input type="password" name="current_password" placeholder="Current Password" required>
+      <input type="password" name="new_password" placeholder="New Password" required>
+      <button type="submit" id="changePasswordBtn">Change Password</button>
+    </form>
 
-            <!-- Reset Password -->
-            <form id="passwordResetForm" style="display: none; margin-top: 1rem;">
-                <input type="password" name="current_password" placeholder="Current Password" required>
-                <input type="password" name="new_password" placeholder="New Password" required>
-                <button type="submit">Change Password</button>
-            </form>
-
-            <div class="message" id="profileMessage"></div>
-
-        </div>
+    <div class="message" id="profileMessage"></div>
+  </div>
+</div>
 
 
 
-    </div> <!-- /appointment-wrapper -->
     <div class="tab-content" data-tab="all_appointments" style="display: none;">
     <h2>All Appointments</h2>
 
@@ -513,7 +508,7 @@ $mysqli->close();
 <div class="tab-content" data-tab="write-review" style="display: none;">
   <h2>Write a Review</h2>
   <form id="reviewForm">
-    <label>Service</label>
+    <label class = "firstreviewlabel">Service</label>
     <select name="service" required>
       <option value="">Select Service</option>
       <?php foreach ($services as $s): ?>
@@ -543,27 +538,20 @@ $mysqli->close();
 
   </div>
 </div>
-      <script src="script.js"></script>
-      <script src="modal.js"></script>
-      <script>
+<script src="script.js"></script>
+<script src="modal.js"></script>
+
+<!-- Затем inline-логика -->
+<script>
   const isLoggedIn = <?= json_encode($loggedIn) ?>;
 
-//   function handleBookNowClick() {
-//     if (isLoggedIn) {
-//       openUserModal();
-//     } else {
-//       openModal();
-//     }
-//   }
-
-
-function openModal() {
+  function openModal() {
     document.getElementById('authModal').style.display = 'flex';
-}
+  }
 
-function openUserModal() {
+  function openUserModal() {
     document.getElementById('userModal').style.display = 'flex';
-}
+  }
 </script>
 
 </body>

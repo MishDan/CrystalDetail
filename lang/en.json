@@ -73,11 +73,12 @@
     "noAccount": "Don't have an account? Register here",
     "haveAccount": "Already have an account? Login here"
   },
-  "userPanel": {
+   "userPanel": {
     "hello": "Hello",
     "createAppointment": "Create Appointment",
     "myHistory": "My History",
     "editProfile": "Edit Profile",
+    "editProfileTitle": "Edit Profile",
     "writeReview": "Create review",
     "allAppointments": "All Appointments",
     "allUsers": "All Users",
@@ -87,6 +88,12 @@
     "logout": "Logout",
     "profileImage": "Profile Image",
     "clickToChange": "Click to change",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "usernameOrGmail": "Username or Gmail",
+    "phone": "Phone Number",
+    "carMake": "Car Make",
+    "carModel": "Car Model",
     "saveChanges": "Save Changes",
     "resetPassword": "Reset Password",
     "currentPassword": "Current Password",
@@ -104,6 +111,27 @@
     "writeReviewTitle": "Write a Review",
     "rating": "Rating",
     "yourReview": "Your Review",
-    "submitReview": "Submit Review"
-  }
+    "submitReview": "Submit Review",
+    "errorLoading": "Error loading profile data."
+
+  },
+  "appointment": {
+  "title": "Create Appointment",
+  "carModel": "Car Model",
+  "service": "Service",
+  "selectService": "Select Service",
+  "date": "Date",
+  "time": "Time",
+  "confirm": "Confirm Booking"
+},
+"history": {
+  "title": "My Appointments",
+  "service": "Service",
+  "carModel": "Car Model",
+  "date": "Date",
+  "time": "Time",
+  "noAppointments": "No appointments found."
 }
+
+}
+

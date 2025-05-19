@@ -18,5 +18,5 @@ while ($row = $result->fetch_assoc()) {
     $services[] = $row;
 }
 
-header('Content-Type: application/json');
+header('Content-Type: application/json');   
 echo json_encode($services);

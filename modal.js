@@ -158,45 +158,66 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
     });
   });
-  function loadHistory() {
-    fetch('database/get_user_appointments.php')
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('historyContent');
-        if (data.length === 0) {
-          container.innerHTML = '<p>No appointments found.</p>';
-          return;
-        }
-  
-        container.innerHTML = data.map(app => `
-          <div>
-            <strong>${app.title}</strong> — ${app.appointment_date} at ${app.appointment_time}
-          </div>
-        `).join('');
-      });
-  }
-  
+
+
+
   // history
-  document.querySelector('[data-tab="history"]').addEventListener('click', loadHistory);
-  function loadHistory() {
-    fetch('database/get_user_appointments.php')
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('historyContent');
-        if (!container) return;
-  
-        if (data.length === 0) {
-          container.innerHTML = '<p>No appointments found.</p>';
-          return;
-        }
-  
-        container.innerHTML = data.map(app => `
-          <div>
-            <strong>${app.title}</strong> — ${app.appointment_date} at ${app.appointment_time}
-          </div>
-        `).join('');
-      });
-  } 
+
+function loadHistory() {
+  const lang = localStorage.getItem("lang") || "en";
+
+  Promise.all([
+    fetch(`lang/${lang}.json`).then(r => r.json()),
+    fetch('database/get_user_appointments.php').then(r => r.json())
+  ])
+  .then(([t, data]) => {
+    const container = document.getElementById('historyContent');
+    if (!container) return;
+
+    const labels = t.history || {
+      title: "My Appointments",
+      service: "Service",
+      carModel: "Car Model",
+      date: "Date",
+      time: "Time",
+      noAppointments: "No appointments found."
+    };
+
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = `<p>${labels.noAppointments}</p>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <h2>${labels.title}</h2>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>${labels.service}</th>
+            <th>${labels.carModel}</th>
+            <th>${labels.date}</th>
+            <th>${labels.time}</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(app => `
+            <tr>
+              <td>${app.title}</td>
+              <td>${app.car_model}</td>
+              <td>${app.appointment_date}</td>
+              <td>${app.appointment_time}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  })
+  .catch(err => {
+    console.error("Error loading appointments or translation:", err);
+    document.getElementById('historyContent').innerHTML = '<p>Error loading data.</p>';
+  });
+}
+
 
 
   // вкладки
@@ -213,6 +234,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
       if (tab === 'history') {
         loadHistory(); 
       }
+   
+  
     });
   });
   
