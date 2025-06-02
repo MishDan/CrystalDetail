@@ -86,10 +86,10 @@ if ($mode === 'register') {
             $_SESSION['user_id'] = $id;
             echo json_encode(['success' => 'Login successful!']);
         } else {
-            echo json_encode(['error' => 'Incorrect password']);
+            echo json_encode(['error' => 'Incorrect Username or password']);
         }
     } else {
-        echo json_encode(['error' => 'User not found']);
+        echo json_encode(['error' => 'Incorrect Username or password']);
     }
 }
 ?>

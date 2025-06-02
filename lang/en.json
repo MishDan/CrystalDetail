@@ -59,7 +59,7 @@
     "businessHours": "Business Hours",
     "mondayFriday": "Monday - Friday:",
     "saturday": "Saturday:",
-    "sunday": "Sunday:",
+    "sunday": "Sunday: Closed",
     "bottomNote": "© 2024 CrystalDetail. All rights reserved."
   },
   "modal": {
@@ -74,7 +74,7 @@
     "haveAccount": "Already have an account? Login here"
   },
    "userPanel": {
-    "hello": "Hello",
+    "hello": "Welcome",
     "createAppointment": "Create Appointment",
     "myHistory": "My History",
     "editProfile": "Edit Profile",
@@ -112,7 +112,8 @@
     "rating": "Rating",
     "yourReview": "Your Review",
     "submitReview": "Submit Review",
-    "errorLoading": "Error loading profile data."
+    "errorLoading": "Error loading profile data.",
+    "message":"Messages"
 
   },
   "appointment": {

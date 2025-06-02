@@ -14,7 +14,6 @@ if ($mysqli->connect_error) {
     exit;
 }
 
-// Получение языка через GET-параметр
 $lang = $_GET['lang'] ?? 'en';
 $lang = in_array($lang, ['en', 'ru', 'lv']) ? $lang : 'en';
 $field = "title_" . $lang;

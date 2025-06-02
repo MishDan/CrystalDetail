@@ -1,0 +1,179 @@
+{
+  "siteTitle": "CrystalDetail - Profesionāla Detalizācijas Studija",
+  "logoText": "CrystalDetail",
+  "nav": {
+    "home": "Sākums",
+    "services": "Pakalpojumi",
+    "gallery": "Galerija",
+    "reviews": "Atsauksmes",
+    "contact": "Kontakti",
+    "loginRegister": "Pieslēgties vai Reģistrēties"
+  },
+  "hero": {
+    "title": "Profesionāli Detalizācijas Pakalpojumi",
+    "desc": "Atgrieziet savam auto izstāžu zāles spīdumu ar mūsu premium pakalpojumiem. Rūpīga uzmanība katrai detaļai.",
+    "bookNow": "Pieteikties",
+    "ourServices": "Mūsu Pakalpojumi"
+  },
+  "services": {
+    "title": "Mūsu Pakalpojumi",
+    "desc": "Iepazīstieties ar mūsu plašo auto kopšanas pakalpojumu klāstu."
+  },
+  "gallery": {
+    "title": "Galerija",
+    "desc": "Apskatiet rūpīgi iztīrītu automašīnu fotoattēlus."
+  },
+  "video": {
+    "title": "Kā mēs mazgājam automašīnas",
+    "desc": "Skatieties, kā notiek profesionālā detalizācijas mazgāšana."
+  },
+  "reviews": {
+    "title": "Klientu Atsauksmes",
+    "prev": "← Iepriekšējais",
+    "next": "Nākamais →"
+  },
+  "contact": {
+    "title": "Uzdodiet mums jautājumu",
+    "getInTouch": "Sazinieties ar mums",
+    "phone": "Tālrunis",
+    "email": "E-pasts",
+    "location": "Adrese",
+    "name": "Jūsu vārds*",
+    "emailAddress": "E-pasta adrese*",
+    "phoneNumber": "Tālruņa numurs",
+    "interestedService": "Interesējošais pakalpojums",
+    "selectService": "Izvēlieties pakalpojumu",
+    "servicesList": [
+      "Ārējā mazgāšana",
+      "Salona tīrīšana",
+      "Pulēšana",
+      "Keramiskais pārklājums",
+      "Skrāpējumu noņemšana",
+      "Aizsargplēve"
+    ],
+    "message": "Jūsu ziņojums*",
+    "sendMessage": "Nosūtīt ziņojumu"
+  },
+  "footer": {
+    "about": "Profesionāli detalizācijas pakalpojumi ar uzmanību katrai detaļai. Atgriežam spīdumu jūsu auto salonam un virsbūvei.",
+    "quickLinks": "Ātrās saites",
+    "businessHours": "Darba laiks",
+    "mondayFriday": "Pirmdiena - Piektdiena:",
+    "saturday": "Sestdiena:",
+    "sunday": "Svētdiena: Slēgts",
+    "bottomNote": "© 2024 CrystalDetail. Visas tiesības aizsargātas."
+  },
+  "modal": {
+    "login": "Pieslēgšanās",
+    "registerFields": [
+      "Vārds",
+      "Uzvārds",
+      "E-pasts",
+      "Auto marka",
+      "Auto modelis",
+      "Tālruņa numurs"
+    ],
+    "usernameOrGmail": "Lietotājvārds vai e-pasts",
+    "password": "Parole",
+    "submit": "Iesniegt",
+    "noAccount": "Nav konta? Reģistrējieties šeit",
+    "haveAccount": "Jau ir konts? Pieslēgties"
+  },
+  "userPanel": {
+    "hello": "Sveiki",
+    "createAppointment": "Izveidot pierakstu",
+    "myHistory": "Mani pieraksti",
+    "editProfile": "Rediģēt profilu",
+    "editProfileTitle": "Rediģēt profilu",
+    "writeReview": "Rakstīt atsauksmi",
+    "allAppointments": "Visi pieraksti",
+    "allUsers": "Visi lietotāji",
+    "editServices": "Pakalpojumi",
+    "reviews": "Atsauksmes",
+    "gallery": "Galerija",
+    "logout": "Izrakstīties",
+    "profileImage": "Profila attēls",
+    "clickToChange": "Noklikšķiniet, lai mainītu",
+    "firstName": "Vārds",
+    "lastName": "Uzvārds",
+    "usernameOrGmail": "Lietotājvārds vai e-pasts",
+    "phone": "Tālruņa numurs",
+    "carMake": "Auto marka",
+    "carModel": "Auto modelis",
+    "saveChanges": "Saglabāt izmaiņas",
+    "resetPassword": "Atiestatīt paroli",
+    "currentPassword": "Pašreizējā parole",
+    "newPassword": "Jaunā parole",
+    "changePassword": "Mainīt paroli",
+    "loading": "Ielādējas...",
+    "selectService": "Izvēlieties pakalpojumu",
+    "date": "Datums",
+    "time": "Laiks",
+    "confirmBooking": "Apstiprināt pierakstu",
+    "allReviews": "Visas atsauksmes",
+    "editGallery": "Rediģēt galeriju",
+    "addImage": "Pievienot attēlu",
+    "addService": "Pievienot pakalpojumu",
+    "writeReviewTitle": "Rakstīt atsauksmi",
+    "rating": "Vērtējums",
+    "yourReview": "Jūsu atsauksme",
+    "submitReview": "Iesniegt atsauksmi",
+    "errorLoading": "Kļūda, ielādējot profila datus.",
+    "timeSlotTaken": "Šis laiks jau ir aizņemts.",
+    "missingFields": "Lūdzu, aizpildiet visus laukus.",
+    "bookingSuccess": "Pieraksts veiksmīgi izveidots.",
+    "bookingFailed": "Kļūda, veidojot pierakstu.",
+    "serviceRequired": "Lūdzu, izvēlieties pakalpojumu.",
+    "invalidDate": "Nederīgs datums.",
+    "message": "Ziņojumi"
+  },
+  "history": {
+    "title": "Mani pieraksti",
+    "service": "Pakalpojums",
+    "carModel": "Auto modelis",
+    "date": "Datums",
+    "time": "Laiks",
+    "noAppointments": "Pieraksti nav atrasti."
+  },
+  "appointment": {
+    "title": "Izveidot pierakstu",
+    "carModel": "Auto modelis",
+    "service": "Pakalpojums",
+    "selectService": "Izvēlieties pakalpojumu",
+    "date": "Datums",
+    "time": "Laiks",
+    "confirm": "Apstiprināt pierakstu"
+  },
+  "editProfile": {
+    "title": "Rediģēt profilu",
+    "profileImage": "Profila attēls",
+    "clickToChange": "Noklikšķiniet, lai mainītu",
+    "firstName": "Vārds",
+    "lastName": "Uzvārds",
+    "username": "Lietotājvārds",
+    "phone": "Tālrunis",
+    "carMake": "Auto marka",
+    "carModel": "Auto modelis",
+    "saveChanges": "Saglabāt izmaiņas",
+    "resetPassword": "Atiestatīt paroli",
+    "currentPassword": "Pašreizējā parole",
+    "newPassword": "Jaunā parole",
+    "changePassword": "Mainīt paroli"
+  },
+  "profile": {
+    "editProfileTitle": "Rediģēt profilu",
+    "profileImage": "Profila attēls",
+    "clickToChange": "Noklikšķiniet, lai mainītu",
+    "firstName": "Vārds",
+    "lastName": "Uzvārds",
+    "username": "Lietotājvārds",
+    "phone": "Tālruņa numurs",
+    "carMake": "Auto marka",
+    "carModel": "Auto modelis",
+    "saveChanges": "Saglabāt izmaiņas",
+    "resetPassword": "Atiestatīt paroli",
+    "currentPassword": "Pašreizējā parole",
+    "newPassword": "Jaunā parole",
+    "changePassword": "Mainīt paroli"
+  }
+}

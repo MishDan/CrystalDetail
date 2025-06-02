@@ -13,19 +13,25 @@ function toggleForm(e) {
     e.preventDefault();
 
     const regFields = document.getElementById('registerFields');
-    const isRegister = regFields.style.display === 'none';
+    const formTitle = document.getElementById('formTitle');
+    const registerLink = document.getElementById('registerLink');
+    const loginLink = document.getElementById('loginLink');
+    const authMode = document.getElementById('authMode');
+    const gmailInput = document.querySelector('input[name="gmail"]');
 
-    regFields.style.display = isRegister ? 'block' : 'none';
-    document.getElementById('formTitle').innerText = isRegister ? 'Register' : 'Login';
-    document.getElementById('registerLink').style.display = isRegister ? 'none' : 'block';
-    document.getElementById('loginLink').style.display = isRegister ? 'block' : 'none';
-    document.getElementById('authMode').value = isRegister ? 'register' : 'login';
-    document.querySelector('input[name="gmail"]').placeholder = isRegister ? 'Username' : 'Username or Gmail';
+    const isHidden = window.getComputedStyle(regFields).display === 'none';
 
-    // Отключить/включить поля регистрации !"!!!!!!!!!!!!!!" fix
+    regFields.style.display = isHidden ? 'block' : 'none';
+    formTitle.innerText = isHidden ? 'Register' : 'Login';
+    registerLink.style.display = isHidden ? 'none' : 'block';
+    loginLink.style.display = isHidden ? 'block' : 'none';
+    authMode.value = isHidden ? 'register' : 'login';
+    gmailInput.placeholder = isHidden ? 'Username' : 'Username or Gmail';
+
+    // Переключить required/disabled на полях регистрации
     regFields.querySelectorAll('input').forEach(input => {
-        input.required = isRegister;
-        input.disabled = !isRegister;
+        input.disabled = !isHidden;
+        input.required = isHidden;
     });
 
     clearMessages();
@@ -154,6 +160,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
       if (tab === 'edit_services') loadServices();
       if (tab === 'reviews') loadReviews();
       if (tab === 'gallery_admin') loadGalleryAdmin();
+      if (tab === 'messages') loadMessages();
 
 
     });
@@ -359,91 +366,121 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     loadAppointments()
 }
   
-
 function loadAllUsers(page = 1) {
-    fetch(`database/get_all_users.php?page=${page}`)
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('allUsersTable');
-        const pagination = document.getElementById('userPaginationControls');
-  
-        if (!data.users.length) {
-          container.innerHTML = '<p>No users found.</p>';
-          pagination.innerHTML = '';
-          return;
-        }
-  
-        container.innerHTML = `
-          <table>
-            <thead>
-              <tr><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Car</th><th>Role</th><th>Actions</th></tr>
-            </thead>
-            <tbody>
-              ${data.users.map(u => `
-                <tr data-id="${u.id}">
-                <td><input value="${u.first_name} ${u.last_name}" disabled class="edit-name"></td>
-                <td><input value="${u.username}" disabled class="edit-username"></td>
-                <td><input value="${u.gmail}" disabled class="edit-gmail"></td>
-                <td><input value="${u.phone}" disabled class="edit-phone"></td>
-                <td><input value="${u.car_make} ${u.car_model}" disabled class="edit-car"></td>
-                <td>
-                    <select class="edit-role" disabled>
-                    ${['user', 'moder', 'admin'].map(r => `<option value="${r}" ${u.role === r ? 'selected' : ''}>${r}</option>`).join('')}
-                    </select>
-                </td>
-                <td>
-                    <button onclick="toggleEditRow(this)">Edit</button>
-                    ${
-                    u.role === 'banned'
-                        ? `<button onclick="unbanUser(${u.id})" style="background:#10b981;color:white;">Unban</button>`
-                        : `<button onclick="banUser(${u.id})" style="background:red;color:white;">Ban</button>`
-                    }
-                </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `;
-  
+  fetch(`database/get_all_users.php?page=${page}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('allUsersTable');
+      const pagination = document.getElementById('userPaginationControls');
+
+      if (!data.users.length) {
+        container.innerHTML = '<p>No users found.</p>';
         pagination.innerHTML = '';
-        for (let i = 1; i <= data.total_pages; i++) {
-          pagination.innerHTML += `<button class="${i === page ? 'active' : ''}" onclick="loadAllUsers(${i})">${i}</button>`;
-        }
+        return;
+      }
+
+      container.innerHTML = `
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Car</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.users.map(u => `
+              <tr data-id="${u.id}">
+                <td><input value="${u.first_name} ${u.last_name}" disabled class="edit-name fit-content"></td>
+                <td><input value="${u.username}" disabled class="edit-username fit-content"></td>
+                <td><input value="${u.gmail}" disabled class="edit-gmail fit-content"></td>
+                <td><input value="${u.phone}" disabled class="edit-phone fit-content"></td>
+                <td><input value="${u.car_make} ${u.car_model}" disabled class="edit-car fit-content"></td>
+                <td>
+                  <select class="edit-role fit-content" ${u.role === 'banned' ? 'disabled' : ''}>
+                    ${['user', 'moder', 'admin'].map(r => `<option value="${r}" ${u.role === r ? 'selected' : ''}>${r}</option>`).join('')}
+                  </select>
+                </td>
+                <td>
+                  <button class="toggle-edit-btn">Edit</button>
+                  ${
+                    u.role === 'banned'
+                      ? `<button onclick="unbanUser(${u.id})" style="background:#10b981;color:white;">Unban</button>`
+                      : `<button onclick="banUser(${u.id})" style="background:red;color:white;">Ban</button>`
+                  }
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+
+      // Обработка нажатий "Edit" / "Save"
+      container.querySelectorAll('.toggle-edit-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const row = button.closest('tr');
+          const inputs = row.querySelectorAll('input');
+          const select = row.querySelector('.edit-role');
+          const userId = row.dataset.id;
+
+          const isEditing = button.innerText === 'Save';
+
+          if (isEditing) {
+            // SAVE: обновляем роль
+            const role = select.value;
+            updateUserRole(userId, role);
+            inputs.forEach(input => input.disabled = true);
+            select.disabled = true;
+            button.innerText = 'Edit';
+          } else {
+            // EDIT: активируем поля
+            inputs.forEach(input => input.disabled = false);
+            select.disabled = false;
+            button.innerText = 'Save';
+          }
+        });
       });
-  }
-  
-  function banUser(userId) {
-    if (!confirm("Are you sure you want to ban this user?")) return;
-    updateUserRole(userId, 'banned');
-  }
-  
-  function updateUserRole(userId, role) {
-    fetch('database/update_user_role.php', {
-      method: 'POST',
-      body: new URLSearchParams({ userId, role })
-    })
-    .then(res => res.json())
-    .then(res => {
-      if (res.success) loadAllUsers();
-      else alert(res.error || 'Failed to update role');
-    });
-  }
-  function unbanUser(userId) {
-    if (!confirm("Unban this user?")) return;
-  
-    fetch('database/update_user_role.php', {
-      method: 'POST',
-      body: new URLSearchParams({ userId, role: 'user' })
-    })
-    .then(res => res.json())
-    .then(res => {
-      if (res.success) {
-        loadAllUsers();
-      } else {
-        alert(res.error || 'Failed to unban user');
+
+      pagination.innerHTML = '';
+      for (let i = 1; i <= data.total_pages; i++) {
+        pagination.innerHTML += `<button class="${i === page ? 'active' : ''}" onclick="loadAllUsers(${i})">${i}</button>`;
       }
     });
-  }
+}
+
+function updateUserRole(userId, role) {
+  fetch('database/update_user_role.php', {
+    method: 'POST',
+    body: new URLSearchParams({ userId, role })
+  })
+  .then(async res => {
+    const text = await res.text();
+    try {
+      const json = JSON.parse(text);
+      if (!json.success) alert(json.error || 'Failed to update role');
+    } catch (err) {
+      alert("❌ Server error:\n" + text);
+    }
+  });
+}
+
+function banUser(userId) {
+  if (!confirm("Are you sure you want to ban this user?")) return;
+  updateUserRole(userId, 'banned');
+  loadAllUsers();
+}
+
+function unbanUser(userId) {
+  if (!confirm("Unban this user?")) return;
+  updateUserRole(userId, 'user');
+  loadAllUsers();
+}
+
+
   function toggleEditRow(btn) {
     const row = btn.closest('tr');
     const isEditing = btn.textContent === 'Save';
@@ -872,3 +909,135 @@ function deleteGalleryImage(id, imagePath) {
       });
     }
   });
+
+
+
+  document.getElementById('contact-form')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const form = e.target;
+  const msgEl = form.querySelector('.form-message') || document.createElement('div');
+  msgEl.className = 'form-message';
+  form.appendChild(msgEl);
+
+  const formData = new FormData(form);
+
+  fetch('database/submit_message.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(res => {
+    if (res.success) {
+      msgEl.innerText = '✅ ';
+      msgEl.style.color = 'green';
+      form.reset();
+    } else {
+      msgEl.innerText = '❌';
+      msgEl.style.color = 'red';
+    }
+  });
+});
+
+let currentMessagesPage = 1;
+
+function loadMessages(page = 1) {
+    fetch(`database/get_messages.php?page=${page}`, {
+        credentials: 'include' // Ensure session cookie is sent
+    })
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('messagesList');
+            const pagination = document.getElementById('messagesPagination') || document.createElement('div');
+            if (!container) return;
+
+            if (data.error) {
+                container.innerHTML = `<p>Error: ${data.error}</p>`;
+                pagination.innerHTML = '';
+                return;
+            }
+
+            if (!data.messages || !data.messages.length) {
+                container.innerHTML = '<p>No messages found.</p>';
+                pagination.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="messages-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Service</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.messages.map(m => `
+                            <tr>
+                                <td>${m.name}</td>
+                                <td>${m.email}</td>
+                                <td>${m.service || 'General'}</td>
+                                <td>${m.message}</td>
+                                <td>${m.created_at}</td>
+                                <td><button onclick="deleteMessage(${m.id})" style="color:red;">Delete</button></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            if (!document.getElementById('messagesPagination')) {
+                container.parentNode.appendChild(pagination);
+                pagination.id = 'messagesPagination';
+                pagination.className = 'pagination';
+            }
+
+            pagination.innerHTML = '';
+            for (let i = 1; i <= data.total_pages; i++) {
+                pagination.innerHTML += `<button class="${i === page ? 'active' : ''}" onclick="loadMessages(${i})">${i}</button>`;
+            }
+
+            currentMessagesPage = page;
+        })
+        .catch(err => {
+            console.error('Fetch error:', err);
+            document.getElementById('messagesList').innerHTML = '<p>Error loading messages.</p>';
+        });
+}
+function deleteMessage(id) {
+    if (!confirm('Are you sure you want to delete this message?')) return;
+    fetch('database/delete_message.php', {
+        method: 'POST',
+        body: new URLSearchParams({ id })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.success) {
+            loadMessages(currentMessagesPage);
+        } else {
+            alert(res.error || 'Failed to delete message.');
+        }
+    });
+}
+
+function openCreateAppointmentTab() {
+  document.getElementById('userModal').style.display = 'flex';
+
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+
+  const tab = document.querySelector('.tab-btn[data-tab="create"]');
+  const content = document.querySelector('.tab-content[data-tab="create"]');
+  if (tab && content) {
+    tab.classList.add('active');
+    content.style.display = 'block';
+  }
+}
+document.getElementById('userModal').addEventListener('click', function (event) {
+  if (event.target === this) {
+    closeUserModal(); // уже есть функция в коде
+  }
+});

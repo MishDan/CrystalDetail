@@ -15,7 +15,6 @@ if ($mysqli->connect_error) {
 
 $user_id = $_SESSION['user_id'];
 
-// Получение текущего изображения
 $res = $mysqli->prepare("SELECT profile_image FROM users WHERE id = ?");
 $res->bind_param("i", $user_id);
 $res->execute();
@@ -32,7 +31,6 @@ if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) 
     $targetPath = __DIR__ . "/../Images_db/$newFileName";
 
     if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetPath)) {
-        // Удаление старого фото, если не дефолт
         if ($currentImage && $currentImage !== "icon_default_user.png") {
             $oldPath = __DIR__ . "/../Images_db/" . $currentImage;
             if (file_exists($oldPath)) {
@@ -46,7 +44,6 @@ if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) 
     }
 }
 
-// Обновление данных
 $stmt = $mysqli->prepare("UPDATE users SET first_name=?, last_name=?, username=?, phone=?, car_make=?, car_model=?, profile_image=? WHERE id=?");
 $stmt->bind_param(
     "sssssssi",

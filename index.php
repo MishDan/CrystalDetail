@@ -113,7 +113,7 @@ $mysqli->close();
             <h1>Professional Car Detailing Services</h1>
             <p>Bring back your vehicle's showroom shine with our premium detailing services. Expert care for every detail of your car.</p>
             <div class="hero-buttons">
-            <a href="javascript:void(0)" onclick="handleBookNowClick()" class="btn btn-primary">Book Now</a>
+            <a href="javascript:void(0)" onclick="openCreateAppointmentTab()" class="btn btn-primary">Book Now</a>
             <a href="#services" class="btn btn-secondary">Our Services</a>
             </div>
         </div>
@@ -269,26 +269,28 @@ $mysqli->close();
                 <div class="footer-links">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#services">Our Services</a></li>
-                        <li><a href="#gallery">Gallery</a></li>
-                        <li><a href="#reviews">Reviews</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="#home">Home</a></li>         <!-- индекс 0 -->
+                        <li><a href="#services">Our Services</a></li> <!-- индекс 1 -->
+                        <li><a href="#gallery">Gallery</a></li>    <!-- индекс 2 -->
+                        <li><a href="#reviews">Reviews</a></li>    <!-- индекс 3 -->
+                        <li><a href="#contact">Contact</a></li>    <!-- индекс 4 -->
                     </ul>
+
                 </div>
                 <div class="footer-hours">
                     <h3>Business Hours</h3>
                     <ul>
                         <li><span>Monday - Friday:</span> 8:00 AM - 6:00 PM</li>
                         <li><span>Saturday:</span> 9:00 AM - 5:00 PM</li>
-                        <li><span>Sunday:</span> Closed</li>
+                        <li class="closed"><span>Sunday:</span> Closed</li>
                         <div class="language-switcher">
                         <button onclick="setLang('en')">EN</button>
                         <button onclick="setLang('ru')">RU</button>
                         <button onclick="setLang('lv')">LV</button>
                         </div>
+                                        </div>
+
                         </ul>
-                </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2024 CrystalDetail. All rights reserved.</p>
@@ -329,13 +331,11 @@ $mysqli->close();
         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
         <button type="submit">Submit</button>
-
-        <p id="registerLink"><a href="#" onclick="toggleForm(event)">Don't have an account? Register here</a></p>
-        <p id="loginLink" style="display: none;"><a href="#" onclick="toggleForm(event)">Already have an account? Login here</a></p>
-<p id="registerLink">
-        <p id="registerLink"><a href="#" onclick="toggleForm(event)">Don't have an account? Register here</a></p>
-</p>
-
+                <p>
+      <a id="registerLink" href="#" onclick="toggleForm(event); return false;">Don't have an account? Register here</a>
+   
+      <a id="loginLink" style="display: none;" href="#" onclick="toggleForm(event); return false;">Already have an account? Login here</a>
+   </p>
       </form>
     </div>
   </div>
@@ -349,8 +349,7 @@ $mysqli->close();
       
       <!-- Sidebar Tabs -->
       <div class="sidebar">
-        <h3>Hello, <?= $userDisplay ?></h3>
-        <ul>
+        <h3><span></span><?php echo htmlspecialchars($userDisplay); ?></h3>        <ul>
             <li class="tab-btn active" data-tab="create">Create Appointment</li>
             <li class="tab-btn" data-tab="history">My History</li>
             <li class="tab-btn" data-tab="edit">Edit Profile</li>
@@ -358,6 +357,8 @@ $mysqli->close();
 
             <?php if ($role === 'moder' || $role === 'admin'): ?>
                 <li class="tab-btn" data-tab="all_appointments">All Appointments</li>
+                
+
             <?php endif; ?>
 
             <?php if ($role === 'admin'): ?>
@@ -365,6 +366,8 @@ $mysqli->close();
                 <li class="tab-btn" data-tab="edit_services">Services</li>
                 <li class="tab-btn" data-tab="reviews">Reviews</li>
                 <li class="tab-btn" data-tab="gallery_admin">Gallery</li>
+                <li class="tab-btn" data-tab="messages"> Messages</li>
+
 
                 
             <?php endif; ?>
@@ -379,30 +382,24 @@ $mysqli->close();
       <div class="tabs-container">
 
         <!-- Create Appointment Tab -->
-       <div class="appointment-form tab-content" data-tab="create">
-        <h2>Create Appointment</h2>
-        <form id="bookingForm">
-            <label for="car_modele">Car Model</label>
-            <input type="text" id="car_model" name="car_model" required>
-
-            <label for="service_id">Service</label>
-            <select name="service_id" id="service_id" required>
-            <option value="">Select Service</option>
-            </select>
-
-            <label for="dateInput">Date</label>
-            <input type="date" id="dateInput" name="date" required>
-
-            <label for="timeInput">Time</label>
-            <select id="timeInput" name="time" required></select>
-
-            <div class="message" id="bookingError"></div>
-            <div class="message success" id="bookingSuccess"></div>
-
-            <button type="submit">Confirm Booking</button>
-        </form>
+        <div class="appointment-form tab-content" data-tab="create">
+            <h2>Create Appointment</h2>
+            <form id="bookingForm">
+                <label for="car_modele">Car Model</label>
+                <input type="text" id="car_modele" name="car_model" value="<?php echo htmlspecialchars(trim("$carMake $carModel")); ?>" required>
+                <label for="service_id">Service</label>
+                <select name="service_id" id="service_id" required>
+                    <option value="">Select Service</option>
+                </select>
+                <label for="dateInput">Date</label>
+                <input type="date" id="dateInput" name="date" required>
+                <label for="timeInput">Time</label>
+                <select id="timeInput" name="time" required></select>
+                <div class="message" id="bookingError"></div>
+                <div class="message success" id="bookingSuccess"></div>
+                <button type="submit">Confirm Booking</button>
+            </form>
         </div>
-
         <!-- My History Tab -->
         <div class="appointment-history tab-content" data-tab="history" style="display: none;">
           <h2> </h2>
@@ -462,17 +459,17 @@ $mysqli->close();
     <div id="allAppointmentsTable">Loading...</div>
         <div id="paginationControls" class="pagination"></div>
     </div>
-    <div class="tab-content" data-tab="all_users" style="display: none;">
-        <h2>All Users</h2>
-        <div id="allUsersTable">Loading...</div>
-        <div id="userPaginationControls" class="pagination"></div>
-    </div>
+        <!-- All Users Tab -->
+        <div class="tab-content" data-tab="all_users" style="display: none;">
+            <h2>All users</h2>
+            <div id="allUsersTable">Loading...</div>
+            <div id="userPaginationControls" class="pagination"></div>
+        </div>
 
 
     <div class="tab-content" data-tab="edit_services" style="display: none;">
         <h2>Edit Services</h2>
 
-        <!-- Добавлена обёртка с фиксированной высотой и скроллом -->
         <div id="serviceEditorWrapper" style="max-height: 60vh; overflow-y: auto; border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem;">
             <div id="serviceEditor">Loading...</div>
         </div>
@@ -502,7 +499,12 @@ $mysqli->close();
     </div>
 
 
-
+<!-- questions -->
+<div class="tab-content" data-tab="messages" style="display: none;">
+    <h2>Messages from contact form</h2>
+    <div id="messagesList">Loading...</div>
+    <div id="messagesPagination" class="pagination"></div>
+</div>
 
 <!-- reviews -->
 <div class="tab-content" data-tab="write-review" style="display: none;">

@@ -60,7 +60,7 @@
     "businessHours": "Часы работы",
     "mondayFriday": "Понедельник - Пятница:",
     "saturday": "Суббота:",
-    "sunday": "Воскресенье:",
+    "sunday": "Воскресенье: Закрыто",
     "bottomNote": "© 2024 CrystalDetail. Все права защищены."
   },
   "modal": {
@@ -118,7 +118,14 @@
   "rating": "Оценка",
   "yourReview": "Ваш отзыв",
   "submitReview": "Отправить отзыв",
-  "errorLoading": "Ошибка загрузки данных профиля."
+  "errorLoading": "Ошибка загрузки данных профиля.",
+  "timeSlotTaken": "Это время уже занято.",
+  "missingFields": "Пожалуйста, заполните все поля.",
+  "bookingSuccess": "Запись успешно создана.",
+  "bookingFailed": "Ошибка при создании записи.",
+  "serviceRequired": "Пожалуйста, выберите услугу.",
+  "invalidDate": "Неверная дата.",
+  "message":"Сообщения"
 }
 ,"history": {
   "title": "Мои записи",
@@ -171,8 +178,4 @@
   "newPassword": "Новый пароль",
   "changePassword": "Изменить пароль"
 }
-
-
-
-  
 }

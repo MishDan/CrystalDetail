@@ -15,11 +15,9 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $perPage = 1;
 $offset = ($page - 1) * $perPage;
 
-// Считаем общее число
 $total = $mysqli->query("SELECT COUNT(*) as total FROM services")->fetch_assoc()['total'];
 $pages = ceil($total / $perPage);
 
-// Получаем ВСЕ языковые поля для формы
 $stmt = $mysqli->prepare("
     SELECT id, 
            title_en, title_ru, title_lv, 
