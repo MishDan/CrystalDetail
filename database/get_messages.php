@@ -2,7 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Отладка сессии
 file_put_contents('debug.log', print_r($_SESSION, true) . PHP_EOL);
 
 if (!isset($_SESSION['user_id'])) {
